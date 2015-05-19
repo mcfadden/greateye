@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  camera_id: 
+  event_type: 1
+  event_timestamp: 2015-04-21 11:46:10
+
+two:
+  camera_id: 
+  event_type: 1
+  event_timestamp: 2015-04-21 11:46:10

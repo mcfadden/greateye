@@ -1,0 +1,6 @@
+.row
+  - @cameras.each do |camera|
+    .col-md-4.col-sm-6
+      %h2= link_to camera.name, camera_path(camera)
+      = image_tag(camera.camera_events.complete.ordered.first.camera_event_assets.thumbnails.first.asset_url, width: "100%") rescue nil
+      

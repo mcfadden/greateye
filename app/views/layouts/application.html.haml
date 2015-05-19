@@ -1,0 +1,51 @@
+!!!
+%html
+  %head
+    %meta{:charset => "utf-8"}/
+    %title=content_for?(:page_title) ? content_for(:page_title) : "Great Eye"
+
+    =# raw "<link href=\"http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin\" rel=\"stylesheet\" type=\"text/css\">"
+
+    = stylesheet_link_tag    "application", :media => "all", data: { turbolinks_track: true }
+    = javascript_include_tag "application", data: { turbolinks_track: true }
+    
+    %link{rel: "apple-touch-icon", href: image_path("great-eye-sm")}
+    
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
+    
+    = csrf_meta_tags
+
+    :javascript
+      Turbolinks.enableTransitionCache();
+    %link{:href => "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css", :rel => "stylesheet"}/
+  %body.body{ class: content_for?(:body_class) ? content_for(:body_class) : "" }
+    %nav.navbar.navbar-default{ "role" => "navigation" }
+      .container-fluid
+        .navbar-header
+          %button.navbar-toggle{ "type" => "button", "data-toggle" => "collapse", "data-target" => ".bs-navbar-collapse"}
+            %span.sr-only
+              Toggle Navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand{:href => "/"}
+            %img{ src: image_path("great-eye-sm"), style: "max-height: 40px; margin-top: -10px; border-radius: 5px", alt: "Great Eye", align: "left" }
+        %nav.collapse.navbar-collapse.bs-navbar-collapse
+          %ul.nav.navbar-nav
+            - cn = controller.controller_name
+
+            %li{:class => cn == 'cameras' ? 'active' : ''}
+              = link_to "Cameras", cameras_path
+          
+            %li{:class => (cn == 'camera_events' && controller.action_name == "index") ? 'active' : ''}
+              = link_to "Recent Events", camera_events_path
+              
+            %li{:class => (cn == 'camera_events' && controller.action_name == "kept") ? 'active' : ''}
+              = link_to "Kept Events", kept_camera_events_path
+              
+            -#%li{:class => cn == 'camera_events' ? 'active' : ''}
+              = link_to "Stars", camera_events_path
+
+    .container-fluid
+      = yield
+    

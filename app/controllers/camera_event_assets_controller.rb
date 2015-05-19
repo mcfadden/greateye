@@ -1,0 +1,2 @@
+class CameraEventAssetsController < ApplicationController
+end

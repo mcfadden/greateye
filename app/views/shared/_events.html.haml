@@ -1,0 +1,26 @@
+.row
+  - events.each do |event|
+    .col-md-4.col-sm-6
+      .pull-right.text-right
+        - if event.kept?
+          %i.fa.fa-times
+          = link_to "Unkeep", unkeep_camera_event_path(event), method: :post
+        - else
+          %i.fa.fa-floppy-o
+          = link_to "Keep", keep_camera_event_path(event), method: :post
+      .text-left
+        = event.event_timestamp.strftime("%b %-d, %Y %-l:%M:%S%P")
+      - video = event.camera_event_assets.videos.first
+      .thumbnail{data: {video_url: video.asset_url}}
+        = image_tag(event.camera_event_assets.thumbnails.first.asset_url, width: "100%") rescue nil
+     
+.row
+  .col-md-12.text-center
+    = paginate events, :theme => 'twitter-bootstrap-3'
+  
+:coffeescript
+  $(".thumbnail img").click (e)->
+    video_url = $(this).parent(".thumbnail").data('video-url')
+    $(this).parent(".thumbnail").html(
+      "<video src='\#{video_url}' width='100%' controls='true' autoplay='autoplay' />"
+    )

@@ -1,0 +1,2 @@
+module CameraEventsHelper
+end
