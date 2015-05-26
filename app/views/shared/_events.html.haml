@@ -1,13 +1,13 @@
 .row
   - events.each do |event|
     .col-md-4.col-sm-6
-      .pull-right.text-right
+      .pull-right.text-right.keep-link-wrapper{data: {kept: event.kept?.to_s, keep_path: keep_camera_event_path(event), unkeep_path: unkeep_camera_event_path(event)} }
         - if event.kept?
           %i.fa.fa-times
-          = link_to "Unkeep", unkeep_camera_event_path(event), method: :post
+          = link_to "Unkeep", unkeep_camera_event_path(event), class: "unkeep", method: :post, remote: true
         - else
           %i.fa.fa-floppy-o
-          = link_to "Keep", keep_camera_event_path(event), method: :post
+          = link_to "Keep", keep_camera_event_path(event), class: "keep", method: :post, remote: true
       .text-left
         = event.event_timestamp.strftime("%b %-d, %Y %-l:%M:%S%P")
       - video = event.camera_event_assets.videos.first
@@ -24,3 +24,24 @@
     $(this).parent(".thumbnail").html(
       "<video src='\#{video_url}' width='100%' controls='true' autoplay='autoplay' />"
     )
+    
+  $(".keep-link-wrapper a").on "ajax:success", (e, data, status, xhr) ->
+    kept = $(this).parents('.keep-link-wrapper').data('kept')
+    console.log "current kept status: \#{kept}"
+    console.log $(this)
+    console.log typeof(kept)
+    console.log kept == "true"
+    
+    if kept
+      # We just marked it unkeep
+      console.log "changing to keep"
+      $(this).html("Keep").attr("href", $(this).parents(".keep-link-wrapper").data("keep-path"))
+      $(this).parents('.keep-link-wrapper').find("i.fa").removeClass("fa-times").addClass("fa-floppy-o")
+      $(this).removeClass("unkeep").addClass("keep")
+      $(this).parents('.keep-link-wrapper').data('kept', false)
+    else
+      console.log "changing to unkeep"
+      $(this).html("Unkeep").attr("href", $(this).parents(".keep-link-wrapper").data("unkeep-path"))
+      $(this).parents('.keep-link-wrapper').find("i.fa").removeClass("fa-floppy-o").addClass("fa-times")
+      $(this).removeClass("keep").addClass("unkeep")
+      $(this).parents('.keep-link-wrapper').data('kept', true)
