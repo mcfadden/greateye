@@ -1,7 +1,7 @@
 class ProcessFtpMotionEventWorker
   include Sidekiq::Worker
 
-  sidekiq_options retry: 2
+  sidekiq_options retry: 1
   
   def perform(camera_id, ftp_file)
     camera = Camera.find(camera_id)
@@ -28,11 +28,16 @@ class ProcessFtpMotionEventWorker
     #cmd = "ffmpeg -i \"#{temp.path}\" -b:a 128k -vcodec mpeg4 -b:v 1200k -flags +aic+mv4 \"#{temp.path}.mp4\""
     
     
-    # This cmd outputs a video file, and a PNG which is a thumbnail from the 5.5second mark in the video:
-    cmd = "ffmpeg -y -threads '1' -i \"#{tempfile.path}\" \
-      -map '0:v' -map '0:a' -b:a 128k -vcodec mpeg4 -b:v 1200k -flags +aic+mv4 \"#{tempfile.path}.mp4\" \
-      -map '0:v' -ss 00:00:5.5 -vframes 1 \"#{tempfile.path}.jpg\""
+    # OLD:
     
+      # # This cmd outputs a video file, and a PNG which is a thumbnail from the 5.5second mark in the video:
+      # cmd = "ffmpeg -y -threads '1' -i \"#{tempfile.path}\" \
+      #   -map '0:v' -map '0:a' -b:a 128k -vcodec mpeg4 -b:v 1200k -flags +aic+mv4 \"#{tempfile.path}.mp4\" \
+      #   -map '0:v' -ss 00:00:5.5 -vframes 1 \"#{tempfile.path}.jpg\""
+      #
+      # run_shell_command(cmd , "ffmpeg transcode")
+    
+    cmd = "ffmpeg -i \"#{tempfile.path}\" -vcodec copy -acodec libfaac -b:a 128k \"#{tempfile.path}.mp4\"  && ffmpeg -ss 00:00:5.5 -i \"#{tempfile.path}\" -vframes 1 \"#{tempfile.path}.jpg\""
     run_shell_command(cmd , "ffmpeg transcode")
     
     output_video_path = "#{tempfile.path}.mp4"
@@ -45,7 +50,7 @@ class ProcessFtpMotionEventWorker
       
       Rails.logger.debug "Creating camera event"
       # Create the motion event
-      time_string = File.basename(file).gsub("alarm_", "").gsub(".avi", "")
+      time_string = File.basename(file).gsub("MDalarm_", "").gsub("alarm_", "").gsub(".avi", "")
       timestamp = DateTime.strptime(time_string, "%Y%m%d_%H%M%S")
       
       if camera.camera_events.where(event_timestamp: timestamp).count > 0
@@ -97,12 +102,12 @@ class ProcessFtpMotionEventWorker
     
       Rails.logger.debug "Deleting #{file} from FTP server"
       ftp.delete(file)
-      ftp.close
     ensure
+      ftp.close
       
       # delete the transcoded file and thumbnail
-      File.delete(output_video_path)
-      File.delete(thumbnail_path)
+      File.delete(output_video_path) if File.exist?(output_video_path)
+      File.delete(thumbnail_path) if File.exist?(thumbnail_path)
       
       # release the tmp file
       Rails.logger.debug "Deleting tempfile"

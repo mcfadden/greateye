@@ -11,7 +11,7 @@ CURRENT_DIRECTORY = Dir.pwd
 God.watch do |w|
   w.name = "sidekiq"
   w.dir = "#{CURRENT_DIRECTORY}"
-  w.start = "bundle exec sidekiq -c 1"
+  w.start = "bundle exec sidekiq -c 5"
   w.log = "#{CURRENT_DIRECTORY}/log/sidekiq.log"
 
   w.keepalive

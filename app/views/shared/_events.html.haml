@@ -11,9 +11,9 @@
       .text-left
         = event.event_timestamp.strftime("%b %-d, %Y %-l:%M:%S%P")
       - video = event.camera_event_assets.videos.first
-      .thumbnail{data: {video_url: video.asset_url}}
-        - cache ["event_asset", event.camera_event_assets.thumbnails.first], expires_in: 12.hours do 
-          = image_tag(event.camera_event_assets.thumbnails.first.asset_url(expires: Date.tomorrow.end_of_day), width: "100%") rescue nil
+      .thumbnail{data: {video_url: (video.asset_url(expires: 1.week.from_now) rescue nil)}}
+        - cache ["event_asset", event.camera_event_assets.thumbnails.first], expires_in: 3.days do 
+          = image_tag(event.camera_event_assets.thumbnails.first.asset_url(expires: 1.week.from_now), width: "100%") rescue nil
      
 .row
   .col-md-12.text-center

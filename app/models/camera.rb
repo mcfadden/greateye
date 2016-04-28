@@ -18,10 +18,9 @@ class Camera < ActiveRecord::Base
     return ftp
   end
   
-  def files_via_ftp
-    ftp = connect_to_ftp
+  def files_via_ftp(ftp)
+    ftp ||= connect_to_ftp
     files = files_in_directory(ftp, ftp.pwd, recursive = true)
-    ftp.close
     return files
   end
   
