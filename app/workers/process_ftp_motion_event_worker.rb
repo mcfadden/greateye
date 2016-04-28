@@ -16,7 +16,7 @@ class ProcessFtpMotionEventWorker
       
     rescue Net::FTPPermError => ex
       if ex.message.include?("No such file or directory")
-        puts "No such file or directory: #{file}"
+        #puts "No such file or directory: #{file}"
         ftp.close
         return
       end
@@ -121,12 +121,12 @@ class ProcessFtpMotionEventWorker
   end
   
   def run_shell_command( cmd, desc = "", raise_error_on_fail = true )
-    puts cmd
+    #puts cmd
     output = `#{cmd} 2>&1`
     status = $?.exitstatus
 
-    puts "Output:\n#{output}"
-    puts "Status:\n#{status}"
+    #puts "Output:\n#{output}"
+    #puts "Status:\n#{status}"
 
     raise "#{desc} failed. #{output}" if status != 0 && raise_error_on_fail
   end

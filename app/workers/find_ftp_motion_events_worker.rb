@@ -24,9 +24,9 @@ class FindFtpMotionEventsWorker
           # If there's a file with a ".avi_idx" extension then it's currently recording that .avi
           # ex: alarm_20150422_081443.avi_idx
       
-          puts "Checking for #{file}_idx"
+          #puts "Checking for #{file}_idx"
           if files.include?("#{file}_idx")
-            puts "Currently recording #{file}. Skipping"
+            #puts "Currently recording #{file}. Skipping"
             next
           end
       

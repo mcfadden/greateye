@@ -13,6 +13,7 @@ class Camera < ActiveRecord::Base
   
   def connect_to_ftp
     ftp = Net::FTP.new
+    ftp.passive = false
     ftp.connect(host, port)  # here you can pass a non-standard port number
     ftp.login(username, password)
     return ftp
