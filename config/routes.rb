@@ -1,7 +1,10 @@
-require 'sidekiq/web'
 Rails.application.routes.draw do
   devise_for :users
-  mount Sidekiq::Web => '/sidekiq'
+  
+  authenticate :user do
+    require 'sidekiq/web'
+    mount Sidekiq::Web => '/sidekiq'
+  end
     
   #resources :camera_event_assets
   resources :camera_events do
