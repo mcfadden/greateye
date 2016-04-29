@@ -68,9 +68,9 @@ namespace :deploy do
       on roles(:web) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            #execute "sudo pumactl --config-file /www/sermons/current/config/puma.rb phased-restart"
-            #execute "sudo restart sidekiq"
-            #execute "sudo restart clockwork"
+            execute "sudo pumactl --config-file /www/greateye/current/config/puma.rb phased-restart"
+            execute "sudo restart sidekiq"
+            execute "sudo restart clockwork"
           end
         end
       end
