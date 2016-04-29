@@ -117,7 +117,7 @@ class ProcessFtpMotionEventWorker
   end
   
   def create_tempfile(prefix)
-    return Tempfile.new(prefix, Rails.root.join('tmp') )
+    return Tempfile.new(prefix, Rails.root.join('tmp').join('camera-event-assets') )
   end
   
   def run_shell_command( cmd, desc = "", raise_error_on_fail = true )
