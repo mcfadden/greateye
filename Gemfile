@@ -55,3 +55,5 @@ gem 'bootstrap-kaminari-views'
 gem "clockwork"
 
 gem 'devise'
+
+gem 'puma'
