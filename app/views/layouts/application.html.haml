@@ -9,7 +9,7 @@
     = stylesheet_link_tag    "application", :media => "all", data: { turbolinks_track: true }
     = javascript_include_tag "application", data: { turbolinks_track: true }
     
-    %link{rel: "apple-touch-icon", href: image_path("great-eye-sm")}
+    %link{rel: "apple-touch-icon", href: image_path("great-eye-sm.jpg")}
     
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
     
@@ -29,7 +29,7 @@
             %span.icon-bar
             %span.icon-bar
           %a.navbar-brand{:href => "/"}
-            %img{ src: image_path("great-eye-sm"), style: "max-height: 40px; margin-top: -10px; border-radius: 5px", alt: "Great Eye", align: "left" }
+            %img{ src: image_path("great-eye-sm.jpg"), style: "max-height: 40px; margin-top: -10px; border-radius: 5px", alt: "Great Eye", align: "left" }
         %nav.collapse.navbar-collapse.bs-navbar-collapse
           %ul.nav.navbar-nav
             - cn = controller.controller_name
