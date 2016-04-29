@@ -12,7 +12,7 @@ class ProcessFtpMotionEventWorker
     tempfile = create_tempfile("camera-#{camera.id.to_s}-")
     begin
       
-      ftp.getbinaryfile(file, tempfile)
+      ftp.getbinaryfile(file, tempfile.path)
       
     rescue Net::FTPPermError => ex
       if ex.message.include?("No such file or directory")
