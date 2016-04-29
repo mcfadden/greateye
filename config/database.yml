@@ -23,3 +23,5 @@ test:
 production:
   <<: *default
   database: great_eye_production
+  username: <%= ENV['DATABASE_USER'] %>
+  password: <%= ENV['DATABASE_PASS'] %>
