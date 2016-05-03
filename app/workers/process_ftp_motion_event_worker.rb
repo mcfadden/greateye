@@ -113,7 +113,9 @@ class ProcessFtpMotionEventWorker
       Rails.logger.debug "Deleting tempfile"
       tempfile.close
       tempfile.unlink
+      File.delete(tempfile.path) if tempfile.path && File.exist?(tempfile.path)
     end
+    tempfile = nil # Grasping at straws
   end
   
   def create_tempfile(prefix)
