@@ -1,6 +1,10 @@
+.row.visible-sm-block.visible-xs-block
+  .col-md-12.text-center
+    = paginate events, :theme => 'twitter-bootstrap-3'
 .row
   - events.each do |event|
-    .col-md-4.col-sm-6
+    - highlight_event = params[:show_event_id] && event.id == params[:show_event_id].to_i
+    .col-md-4.col-sm-6.camera-event{class: highlight_event ? "highlighted" : ""}
       .pull-right.text-right.keep-link-wrapper{data: {kept: event.kept?.to_s, keep_path: keep_camera_event_path(event), unkeep_path: unkeep_camera_event_path(event)} }
         - if event.kept?
           %i.fa.fa-times
@@ -9,7 +13,7 @@
           %i.fa.fa-floppy-o
           = link_to "Keep", keep_camera_event_path(event), class: "keep", method: :post, remote: true
       .text-left
-        = event.event_timestamp.strftime("%b %-d, %Y %-l:%M:%S%P")
+        = link_to event.event_timestamp.strftime("%b %-d, %Y %-l:%M:%S%P"), camera_events_path(show_event_id: event.id)
       - video = event.camera_event_assets.videos.first
       .thumbnail{data: {video_url: (video.asset_url(expires: 1.week.from_now) rescue nil)}}
         - cache ["event_asset", event.camera_event_assets.thumbnails.first], expires_in: 3.days do 

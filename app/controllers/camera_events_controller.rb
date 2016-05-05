@@ -1,5 +1,12 @@
 class CameraEventsController < ApplicationController
   def index
+    if params[:show_event_id]
+      event = CameraEvent.find(params[:show_event_id])
+      offset = CameraEvent.complete.ordered.where("created_at > ?", event.created_at).count
+      page = (offset / 24) + 1
+      params[:page] = page
+    end
+    
     @events = CameraEvent.complete.ordered.page(params[:page]).per(24)
   end
   

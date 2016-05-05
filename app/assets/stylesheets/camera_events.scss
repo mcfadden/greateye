@@ -4,3 +4,11 @@
 .thumbnail > video{
   display: block;
 }
+
+.camera-event{
+  &.highlighted{
+    .thumbnail{
+      background-color: rgba(255, 0, 0, .5);
+    }
+  }
+}
