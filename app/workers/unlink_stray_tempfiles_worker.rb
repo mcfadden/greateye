@@ -12,7 +12,7 @@ class UnlinkStrayTempfilesWorker
   end
 
   def find_and_unlink_old_files_in_path(path)
-    Dir.glob("#{path}/*/").first(FILE_LIMIT).each do |directory_path|
+    Dir.glob("#{path}/*").first(FILE_LIMIT).each do |directory_path|
       if File.directory?(directory_path)
         # This is a directory
         should_delete_directory = true
