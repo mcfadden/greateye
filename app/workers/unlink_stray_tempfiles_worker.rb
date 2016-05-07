@@ -31,9 +31,8 @@ class UnlinkStrayTempfilesWorker
           end
         end
       else
-        # This is a file.. not sure why there's a file loose in here.
-        # Just ignore it I guess.
-        nil
+        # This is a file..
+        unlink_file_if_old(directory_path)
       end
     end
   end
