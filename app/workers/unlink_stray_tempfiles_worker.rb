@@ -1,7 +1,7 @@
 class UnlinkStrayTempfilesWorker
   include Sidekiq::Worker
 
-  sidekiq_options retry: false
+  sidekiq_options retry: false, queue: :critical
   
   REMOVE_AFTER = 20.minutes
   FILE_LIMIT = 500

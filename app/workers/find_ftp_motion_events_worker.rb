@@ -2,7 +2,7 @@ class FindFtpMotionEventsWorker
   
   include Sidekiq::Worker
 
-  sidekiq_options retry: 1
+  sidekiq_options retry: 1, queue: :low
 
   def perform(camera_id)
     queue = Sidekiq::Queue.new
