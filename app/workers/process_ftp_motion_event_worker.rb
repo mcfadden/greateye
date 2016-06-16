@@ -33,6 +33,9 @@ class ProcessFtpMotionEventWorker
     
     Rails.logger.debug "Transcoded Video path:  #{output_video_path}"
     Rails.logger.debug "Created Thumbnail path: #{thumbnail_path}"
+
+    raise "Missing output video" unless File.exists?(output_video_path)
+    raise "Missing thumbnail" unless File.exists?(thumbnail_path)
     
     Rails.logger.debug "Creating camera event"
     # Create the motion event
