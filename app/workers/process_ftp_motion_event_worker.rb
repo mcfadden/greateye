@@ -94,8 +94,8 @@ class ProcessFtpMotionEventWorker
     ftp.close
   
     # delete the transcoded file and thumbnail
-    File.delete(output_video_path) if defined?(output_video_path) && File.exist?(output_video_path)
-    File.delete(thumbnail_path) if defined?(thumbnail_path) && File.exist?(thumbnail_path)
+    File.delete(output_video_path) if defined?(output_video_path) && output_video_path && File.exist?(output_video_path)
+    File.delete(thumbnail_path) if defined?(thumbnail_path) && thumbnail_path && File.exist?(thumbnail_path)
   
     # release the tmp file
     Rails.logger.debug "Deleting tempfile"
