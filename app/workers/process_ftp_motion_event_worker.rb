@@ -51,8 +51,6 @@ class ProcessFtpMotionEventWorker
       camera_event = camera.camera_events.create(event_timestamp: timestamp)
     end
   
-  
-  
     Rails.logger.debug "Creating video event asset"
     # Create an asset for the video
     event_asset = camera_event.camera_event_assets.build

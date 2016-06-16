@@ -5,10 +5,10 @@ class FindFtpMotionEventsWorker
   sidekiq_options retry: 1, queue: :low
 
   def perform(camera_id)
-    queue = Sidekiq::Queue.new
-    if queue.size > 25
+    queues = Sidekiq::Queue.all
+    if queue.sum{|q| q.size} > Camera.count + 10
       # We're working through a backlog of some sort, so don't make the problem worse.
-      Rails.logger.debug "Queue size over 25. Skipping this job."
+      Rails.logger.debug "Queue size over limit. Skipping this job."
       return
     end
     
