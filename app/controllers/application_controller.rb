@@ -7,6 +7,6 @@ class ApplicationController < ActionController::Base
   
   private
   def has_valid_key?
-    params[:key] && params[:key] == ENV['ctiYDudixXlIRvnQ']
+    params[:key] && params[:key] == ENV['LIVE_ACCESS_KEY']
   end
 end
