@@ -1,5 +1,5 @@
 - content_for(:body_class){"bg-black"}
-.row
+.row{style: "margin-bottom: 2em"}
   - @cameras.each do |camera|
     .col-md-4.col-sm-6
       = image_tag(camera.preview_url, width: "100%", data: {camera_preview_url: camera.preview_url, camera_model: camera.model}) rescue nil
