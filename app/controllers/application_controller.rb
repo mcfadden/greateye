@@ -4,4 +4,9 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   
   before_action :authenticate_user!
+  
+  private
+  def has_valid_key?
+    params[:key] && params[:key] == ENV['ctiYDudixXlIRvnQ']
+  end
 end

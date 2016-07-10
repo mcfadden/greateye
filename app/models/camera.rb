@@ -7,8 +7,14 @@ class Camera < ActiveRecord::Base
     fi8910w: 1,
   }
   
+  scope :with_recordings, ->{ fi9821wv2 }
+  
   def find_and_process_new_motion_events
-    FindFtpMotionEventsWorker.perform_async(id)
+    FindFtpMotionEventsWorker.perform_async(id) if can_record_events?
+  end
+  
+  def can_record_events?
+    fi9821wv2?
   end
   
   def connect_to_ftp
@@ -31,6 +37,18 @@ class Camera < ActiveRecord::Base
       50021
     else
       nil
+    end
+  end
+  
+  def preview_url
+    case model.to_sym
+    when :fi9821wv2
+      "http://#{host}/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr=#{username}&pwd=#{password}"
+    when :fi8910w
+      #"http://#{host}:#{port}/snapshot.cgi?user=#{username}&pwd=#{password}")
+      "http://#{host}/videostream.cgi?user=#{username}&pwd=#{password}"
+    else
+      return false
     end
   end
 

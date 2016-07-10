@@ -1,0 +1,19 @@
+.row
+  - @cameras.each do |camera|
+    .col-md-4.col-sm-6
+      = image_tag(camera.preview_url, width: "100%", data: {camera_preview_url: camera.preview_url, camera_model: camera.model}) rescue nil
+
+:coffeescript
+  refreshImages = ->
+    $("img[data-camera-model='fi9821wv2']").each ->
+      $(this).load ->
+        refreshImage(this)
+      refreshImage(this)
+  
+  refreshImage = (img)->
+    setTimeout ->
+      console.log "Refreshing image"
+      $(img).attr('src',  "\#{$(img).data('camera-preview-url')}&t=\#{new Date}")
+    , 2000
+    
+  refreshImages()

@@ -17,7 +17,11 @@ Rails.application.routes.draw do
       post 'unkeep' => 'camera_events#unkeep'
     end
   end
-  resources :cameras
+  resources :cameras do
+    collection do
+      get :live
+    end
+  end
   
 
   root 'camera_events#index'
