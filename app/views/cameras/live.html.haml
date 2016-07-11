@@ -1,10 +1,10 @@
-- content_for(:body_class){"bg-black"}
+- content_for(:body_class){"bg-black live"}
 .row{style: "margin-bottom: 2em"}
   - @cameras.each_slice(3) do |cameras|
     .row
       - cameras.each do |camera|
         .col-md-4
-          = image_tag(camera.preview_url, width: "100%", data: {camera_preview_url: camera.preview_url, camera_model: camera.model}) rescue nil
+          = image_tag(camera.preview_url, width: "100%", data: {camera_preview_url: camera.preview_url, camera_model: camera.model}, class: "center-block camera-image") rescue nil
 
 :coffeescript
   refreshImages = ->
