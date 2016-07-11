@@ -14,7 +14,8 @@
   refreshImage = (img)->
     setTimeout ->
       console.log "Refreshing image"
-      $(img).attr('src',  "\#{$(img).data('camera-preview-url')}&t=\#{new Date}")
+      date = new Date()
+      $(img).attr('src',  "\#{$(img).data('camera-preview-url')}&t=\#{date.getMilliseconds()}")
     , 2000
     
   refreshImages()
