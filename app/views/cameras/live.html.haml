@@ -24,5 +24,10 @@
       date = new Date()
       $(img).attr('src',  "\#{$(img).data('camera-preview-url')}&t=\#{date.getMilliseconds()}")
     , 3000
+  
+  scaleImages = ->
+    $("img").height($(window).height() / 3)
     
   refreshImages()
+  
+  scaleImages()
