@@ -5,8 +5,9 @@
   background-color: black;
 }
 .live{
+  overflow: hidden;
   img.camera-image{
-    max-height: 33%;
-    width: auto;
+    //max-height: 33%;
+    //width: auto;
   }
 }
