@@ -11,6 +11,11 @@
     $("img[data-camera-model='fi9821wv2']").each ->
       $(this).load ->
         refreshImage(this)
+      .error ->
+        setTimeout =>
+          refreshImage(this)
+        , 5000
+          
       refreshImage(this)
   
   refreshImage = (img)->
