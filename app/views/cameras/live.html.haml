@@ -23,11 +23,14 @@
       console.log "Refreshing image"
       date = new Date()
       $(img).attr('src',  "\#{$(img).data('camera-preview-url')}&t=\#{date.getMilliseconds()}")
-    , 3000
+    , 2000
   
   scaleImages = ->
-    $("img").height($(window).height() / 3)
+    setTimeout ->
+      $("img").height($(window).height() / 3)
+    , 2000
+  
+  $(window).resize(scaleImages)
     
   refreshImages()
-  
   scaleImages()
