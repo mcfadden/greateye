@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160428222844) do
+ActiveRecord::Schema.define(version: 20160712224429) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20160428222844) do
     t.datetime "updated_at",                      null: false
     t.integer  "status",          default: 0
     t.boolean  "keep",            default: false
+    t.integer  "duration"
   end
 
   add_index "camera_events", ["camera_id"], name: "index_camera_events_on_camera_id", using: :btree

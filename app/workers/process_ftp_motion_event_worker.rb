@@ -37,6 +37,10 @@ class ProcessFtpMotionEventWorker
     raise "Missing output video" unless File.exists?(output_video_path)
     raise "Missing thumbnail" unless File.exists?(thumbnail_path)
     
+    Rails.logger.debug "Calculating duration"
+    cmd = "ffprobe -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 \"#{tempfile.path}.mp4\""
+    duration = run_shell_command(cmd, "ffprobe duration")
+    
     Rails.logger.debug "Creating camera event"
     # Create the motion event
     time_string = File.basename(file).gsub("MDalarm_", "").gsub("alarm_", "").gsub(".avi", "")
@@ -50,6 +54,8 @@ class ProcessFtpMotionEventWorker
     else
       camera_event = camera.camera_events.create(event_timestamp: timestamp)
     end
+    
+    camera_event.update_attributes(duration: duration.to_i) if duration.to_i > 0
   
     Rails.logger.debug "Creating video event asset"
     # Create an asset for the video
@@ -119,5 +125,6 @@ class ProcessFtpMotionEventWorker
     #puts "Status:\n#{status}"
 
     raise "#{desc} failed. #{output}" if status != 0 && raise_error_on_fail
+    return output
   end
 end
