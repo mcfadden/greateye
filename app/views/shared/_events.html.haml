@@ -14,6 +14,8 @@
           = link_to "Keep", keep_camera_event_path(event), class: "keep", method: :post, remote: true
       .text-left
         = link_to event.event_timestamp.strftime("%b %-d, %Y %-l:%M:%S%P"), camera_events_path(show_event_id: event.id)
+        - if event.duration?
+          \- #{Time.at(event.duration).utc.strftime("%M:%S")}
       - video = event.camera_event_assets.videos.first
       .thumbnail{data: {video_url: (video.asset_url(expires: 1.week.from_now) rescue nil)}}
         - cache ["event_asset", event.camera_event_assets.thumbnails.first], expires_in: 3.days do 
