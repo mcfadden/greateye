@@ -23,7 +23,7 @@
       console.log "Refreshing image"
       date = new Date()
       $(img).attr('src',  "\#{$(img).data('camera-preview-url')}&t=\#{date.getMilliseconds()}")
-    , 2000
+    , 1000
   
   scaleImages = ->
     setTimeout ->
