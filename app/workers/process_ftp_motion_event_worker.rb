@@ -25,7 +25,7 @@ class ProcessFtpMotionEventWorker
       #
       # run_shell_command(cmd , "ffmpeg transcode")
 
-    cmd = "ffmpeg -i \"#{tempfile.path}\" -vcodec copy -acodec libfdk-aac -b:a 128k \"#{tempfile.path}.mp4\"  && ffmpeg -ss 00:00:5.5 -i \"#{tempfile.path}\" -vframes 1 \"#{tempfile.path}.jpg\""
+    cmd = "ffmpeg -i \"#{tempfile.path}\" -vcodec copy -acodec libfdk_aac -b:a 128k \"#{tempfile.path}.mp4\"  && ffmpeg -ss 00:00:5.5 -i \"#{tempfile.path}\" -vframes 1 \"#{tempfile.path}.jpg\""
     run_shell_command(cmd , "ffmpeg transcode")
 
     output_video_path = "#{tempfile.path}.mp4"

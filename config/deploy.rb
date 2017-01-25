@@ -78,4 +78,4 @@ namespace :deploy do
   end
 end
 
-#after  "deploy:published", "deploy:services:restart"
+after  "deploy:published", "deploy:services:restart"
