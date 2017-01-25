@@ -4,12 +4,12 @@ lock '3.5.0'
 set :application, 'greateye'
 set :repo_url, 'git@bitbucket.org:benmcfadden/greateye.git'
 
-set :rbenv_type, :user # or :system, depends on your rbenv setup
-set :rbenv_ruby, File.read('.ruby-version').strip
-
-set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
-set :rbenv_map_bins, %w{rake gem bundle ruby rails}
-set :rbenv_roles, :all # default value
+# set :rbenv_type, :user # or :system, depends on your rbenv setup
+# set :rbenv_ruby, File.read('.ruby-version').strip
+#
+# set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
+# set :rbenv_map_bins, %w{rake gem bundle ruby rails}
+# set :rbenv_roles, :all # default value
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
@@ -61,16 +61,16 @@ namespace :deploy do
       # end
     end
   end
-  
+
   namespace :services do
     desc "Restart All Services"
     task :restart do
       on roles(:web) do
         within release_path do
           with rails_env: fetch(:rails_env) do
-            execute "/home/pi/.rbenv/shims/pumactl --config-file /www/greateye/current/config/puma.rb phased-restart"
-            execute "sudo restart sidekiq"
-            execute "sudo restart clockwork"
+            execute "/usr/local/bin/pumactl --config-file /www/greateye/current/config/puma.rb phased-restart"
+            execute "sudo systemctl restart sidekiq"
+            execute "sudo systemctl restart clockwork"
           end
         end
       end
@@ -78,4 +78,4 @@ namespace :deploy do
   end
 end
 
-after  "deploy:published", "deploy:services:restart"
+#after  "deploy:published", "deploy:services:restart"
