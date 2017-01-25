@@ -26,7 +26,7 @@ Run `raspi-config`
 
 Reboot
 
-# Install a few things we'll need 
+# Install a few things we'll need
 
     sudo apt-get install git postgresql postgresql-contrib libpq-dev nginx upstart redis-server
 
@@ -104,6 +104,32 @@ Configure:
     cd ffmpeg;
     ./configure --enable-libfreetype --enable-gpl --enable-nonfree --enable-libx264 --enable-libass --enable-libfaac --enable-libmp3lame --bindir="/usr/local/bin"
 
+
+**********************
+NOTES FROM 1/25/2016
+libfaac support was removed from ffmpeg. I installed libfdk-aac as follows:
+
+
+    cd ~
+    wget -O fdk-aac.tar.gz https://github.com/mstorsjo/fdk-aac/tarball/master
+    tar xzvf fdk-aac.tar.gz
+    cd mstorsjo-fdk-aac*
+    autoreconf -fiv
+    ./configure --enable-shared
+    make -j2
+    sudo make install
+    sudo ldconfig;
+
+Then compile ffmpeg with this:
+
+    ./configure --enable-libfreetype --enable-gpl --enable-nonfree --enable-libx264 --enable-libass --enable-libfdk-aac  --enable-libmp3lame --bindir="/usr/local/bin"
+
+
+*******
+
+
+
+
 Make:
 
     make
@@ -171,7 +197,7 @@ Set up:
 
 Find the upstart config files in the `deploy/upstart` directory in this repository
 
-Copy them to: 
+Copy them to:
 
     /etc/init/sidekiq.conf
     /etc/init/puma.conf
