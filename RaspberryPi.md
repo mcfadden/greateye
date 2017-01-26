@@ -244,3 +244,14 @@ Then on the Pi I copied it to the correct place with:
     sudo mv /var/lib/postgresql/9.4_copy /var/lib/postgresql/9.4
     sudo chown postgres:postgres 9.4/ -R # Fix permissions
     sudo service postgresql start
+
+
+# Notes from latest attempt
+Upstart isn't the right answer anymore. systemd is.
+
+The systemd config files go in (ex) `/lib/systemd/system/sidekiq.service`
+And then you have to enable them with `sudo systemctl enable service.service`
+
+
+Add this to etc/fstab:
+`tmpfs /www/greateve/tmp/camera-event-assets tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777,size=200M 0 0`
