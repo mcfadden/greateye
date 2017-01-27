@@ -8,11 +8,12 @@
 
     = stylesheet_link_tag    "application", :media => "all", data: { turbolinks_track: true }
     = javascript_include_tag "application", data: { turbolinks_track: true }
-    
+    = javascript_include_tag "https://www.gstatic.com/charts/loader.js"
+
     %link{rel: "apple-touch-icon", href: image_path("great-eye-sm.jpg")}
-    
+
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
-    
+
     = csrf_meta_tags
 
     :javascript
@@ -37,16 +38,15 @@
 
               %li{:class => cn == 'cameras' ? 'active' : ''}
                 = link_to "Cameras", cameras_path
-          
+
               %li{:class => (cn == 'camera_events' && controller.action_name == "index") ? 'active' : ''}
                 = link_to "Recent Events", camera_events_path
-              
+
               %li{:class => (cn == 'camera_events' && controller.action_name == "kept") ? 'active' : ''}
                 = link_to "Kept Events", kept_camera_events_path
-              
+
               -#%li{:class => cn == 'camera_events' ? 'active' : ''}
                 = link_to "Stars", camera_events_path
 
     .container-fluid
       = yield
-    

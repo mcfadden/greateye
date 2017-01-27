@@ -72,6 +72,7 @@ GEM
     capistrano-rbenv (2.0.4)
       capistrano (~> 3.1)
       sshkit (~> 1.3)
+    chartkick (2.2.2)
     clockwork (2.0.0)
       activesupport
       tzinfo
@@ -228,6 +229,8 @@ GEM
     formatador (0.2.5)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
+    groupdate (3.1.1)
+      activesupport (>= 3)
     haml (4.0.7)
       tilt
     i18n (0.7.0)
@@ -375,11 +378,13 @@ DEPENDENCIES
   capistrano (~> 3.1)
   capistrano-rails (~> 1.1)
   capistrano-rbenv (~> 2.0)
+  chartkick
   clockwork
   coffee-rails (~> 4.1)
   devise
   figaro
   fog (~> 1.38)
+  groupdate
   haml (~> 4.0)
   jbuilder (~> 2.0)
   jquery-rails

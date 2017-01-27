@@ -2,3 +2,6 @@
   .col-md-12
     %h2 Recent Events
 = render partial: "shared/events", locals: {events: @events}
+
+- if @camera_event_timeline
+  = timeline @camera_event_timeline, library: {groupByRowLabel: false }

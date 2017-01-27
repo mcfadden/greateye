@@ -7,6 +7,13 @@ class CameraEventsController < ApplicationController
       params[:page] = page
     end
 
+    if params[:page].nil? || params[:page] == 1
+      @camera_event_timeline = []
+      CameraEvent.includes(:camera).where("event_timestamp > ?", 24.hours.ago).each do |ce|
+        @camera_event_timeline << [ce.camera.name, ce.event_timestamp, ce.event_timestamp + ce.duration]
+      end
+    end
+
     @events = CameraEvent.complete.ordered.page(params[:page]).per(24)
   end
 
