@@ -4,4 +4,4 @@
 = render partial: "shared/events", locals: {events: @events}
 
 - if @camera_event_timeline
-  = timeline @camera_event_timeline, library: {groupByRowLabel: false }
+  = timeline @camera_event_timeline, library: {groupByRowLabel: false }, height: "#{(Camera.count * 75)}px"
