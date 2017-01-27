@@ -93,8 +93,12 @@ class ProcessFtpMotionEventWorker
 
     camera_event.complete!
 
-    Rails.logger.debug "Deleting #{file} from FTP server"
-    ftp.delete(file)
+    if READ_ONLY_MODE
+      Rails.logger.debug "READ ONLY MODE. Skippping delete for #{file} from FTP server"
+    else
+      Rails.logger.debug "Deleting #{file} from FTP server"
+      ftp.delete(file)
+    end
   rescue Net::FTPPermError => ex
     return if ex.message.include?("No such file or directory")
   ensure
