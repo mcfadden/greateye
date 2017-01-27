@@ -11,7 +11,7 @@ class CameraEventsController < ApplicationController
       @camera_event_timeline = []
       CameraEvent.includes(:camera).where("event_timestamp > ?", 30.hours.ago).each do |ce|
         next if ce.duration > 1.hour
-        @camera_event_timeline << [ce.camera.name, ce.event_timestamp - 7.hours, ce.event_timestamp + ce.duration - 7.hours]
+        @camera_event_timeline << [ce.camera.name, ce.event_timestamp + 7.hours, ce.event_timestamp + ce.duration + 7.hours]
       end
     end
 
