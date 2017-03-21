@@ -9,7 +9,8 @@ class CameraEventsController < ApplicationController
 
     if params[:page].nil? || params[:page] == 1
       @camera_event_timeline = []
-      CameraEvent.order(:camera_id).includes(:camera).where("event_timestamp > ?", 30.hours.ago).each do |ce|
+      #CameraEvent.order(:camera_id).includes(:camera).where("event_timestamp > ?", 30.hours.ago).each do |ce|
+      CameraEvent.order(:camera_id).includes(:camera).where("event_timestamp > ?", 70.days.ago).each do |ce|
         next if ce.duration > 1.hour
         @camera_event_timeline << [ce.camera.name, ce.event_timestamp + 7.hours, ce.event_timestamp + ce.duration + 7.hours]
       end
@@ -17,6 +18,14 @@ class CameraEventsController < ApplicationController
 
     @events = CameraEvent.complete.ordered.page(params[:page]).per(24)
   end
+
+  def selected_from_timeline
+     @camera = Camera.find_by( name: params[:camera] )
+     time = DateTime.parse(params[:occurred_at]).utc - 7.hours
+     @event = @camera.camera_events.where( event_timestamp: (time - 1.second)..(time + 1.second)  ).first
+
+     redirect_to camera_events_path(show_event_id: @event&.id)
+   end
 
   def kept
     @events = CameraEvent.complete.kept.ordered.page(params[:page]).per(24)

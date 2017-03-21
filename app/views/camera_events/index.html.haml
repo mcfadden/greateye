@@ -5,3 +5,13 @@
 
 - if @camera_event_timeline
   = timeline @camera_event_timeline, library: {groupByRowLabel: false }, height: "#{(Camera.count * 75)}px"
+  :coffeescript
+    load_timeline_handler = ->
+      chart = Chartkick.charts['chart-1']
+      selectHandler = (e) ->
+        selection = chart.getChartObject().getSelection()
+        item = chart.dataSource[selection[0]['row']]
+        console.log( item )
+        window.location.href = "/camera_events/selected_from_timeline?camera=" + item[0] + "&occurred_at=" + item[1]
+      google.visualization.events.addListener(chart.getChartObject(), 'select', selectHandler);
+    setTimeout load_timeline_handler, 2000
