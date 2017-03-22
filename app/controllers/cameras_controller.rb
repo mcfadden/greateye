@@ -2,16 +2,13 @@ class CamerasController < ApplicationController
   skip_before_action :authenticate_user!, only: [:live]
 
   def index
-    if params[:inactive] == "1"
-      @cameras = Camera.all
-    else
-      @cameras = Camera.active
-    end
+    @cameras = Camera.ordered
+    @cameras = @cameras.active unless params[:inactive] == "1"
   end
 
   def live
     authenticate_user! unless has_valid_key?
-    @cameras = Camera.all
+    @cameras = Camera.active.ordered
   end
 
   def show

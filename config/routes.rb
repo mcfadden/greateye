@@ -25,7 +25,12 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :cameras
+    resources :cameras do
+      member do
+        post :move_higher
+        post :move_lower
+      end
+    end
     resources :users
     resources :settings
   end

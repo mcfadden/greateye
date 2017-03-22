@@ -7,6 +7,7 @@
   .col-md-12
     %table.table.table-striped
       %tr
+        %th Sort
         %th Name
         %th Make
         %th Model
@@ -15,6 +16,15 @@
 
       - @cameras.each do |camera|
         %tr
+          %td
+            - unless camera.first?
+              = link_to move_higher_admin_camera_path(camera), method: :post do
+                %i.fa.fa-caret-up
+              %br/
+            - unless camera.last?
+              = link_to move_lower_admin_camera_path(camera), method: :post do
+                %i.fa.fa-caret-down
+
           %td= camera.name
           %td= camera.make
           %td= camera.model

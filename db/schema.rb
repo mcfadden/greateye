@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170322214143) do
+ActiveRecord::Schema.define(version: 20170322220328) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 20170322214143) do
     t.string   "ftp_username"
     t.string   "ftp_password"
     t.string   "ftp_path"
+    t.integer  "position"
   end
 
   add_index "cameras", ["make", "model"], name: "index_cameras_on_make_and_model", using: :btree

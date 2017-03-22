@@ -67,3 +67,5 @@ end
 
 gem 'groupdate'
 gem 'chartkick'
+
+gem 'acts_as_list'

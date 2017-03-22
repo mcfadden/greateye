@@ -2,8 +2,11 @@ require "net/ftp"
 class Camera < ActiveRecord::Base
   include CameraTypes
 
+  acts_as_list
+
   has_many :camera_events
 
+  scope :ordered, ->{ order(:position) }
   scope :active, ->{ where(active: true) }
 
   after_initialize :become_type_for_make_and_model

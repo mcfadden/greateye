@@ -1,12 +1,22 @@
 class Admin::CamerasController < Admin::BaseController
-  before_action :load_camera, only: [:edit, :update, :destroy]
+  before_action :load_camera, except: [:index, :create, :new]
 
   def index
-    @cameras = Camera.all
+    @cameras = Camera.ordered
   end
 
   def new
     @camera = Camera.new
+  end
+
+  def move_higher
+    @camera.move_higher
+    redirect_to admin_cameras_path
+  end
+
+  def move_lower
+    @camera.move_lower
+    redirect_to admin_cameras_path
   end
 
   def show
