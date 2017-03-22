@@ -3,15 +3,15 @@ source 'https://rubygems.org'
 ruby '2.3.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.6'
+gem 'rails', '~> 4.2.8'
 # Use pg as the database for Active Record
 gem 'pg'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier'
 # Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.1'
+gem 'coffee-rails'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'therubyracer', platforms: :ruby
 
@@ -20,7 +20,7 @@ gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.0'
+# gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
@@ -29,7 +29,7 @@ group :development, :test do
   gem 'byebug'
 
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 3.0'
+  gem 'web-console'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
@@ -39,20 +39,18 @@ gem 'anaconda'
 
 gem 'haml', '~> 4.0'
 
-gem 'fog', '~> 1.38'
+gem 'figaro'
 
-gem "figaro"
-
-gem "sidekiq"
+gem 'sidekiq'
 gem 'sinatra', :require => nil
 gem 'redis-namespace'
 
-gem 'bootstrap-sass', '~> 3.3.6'
+gem 'bootstrap-sass', '~> 3.3'
 
-gem "kaminari"
+gem 'kaminari'
 gem 'bootstrap-kaminari-views'
 
-gem "clockwork"
+gem 'clockwork'
 
 gem 'devise'
 

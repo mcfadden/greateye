@@ -20,10 +20,10 @@ module CameraTypes
           ip3m_956: Camera::Amcrest::Ip3m
         },
         foscam: {
-          fi8910: Camera::Foscam::Sd
-          fi8918: Camera::Foscam::Sd
+          fi8910: Camera::Foscam::Sd,
+          fi8918: Camera::Foscam::Sd,
           fi9821: Camera::Foscam::HdCgi
-        }
+        },
         reolink: {
           rlc410: Camear::Reolink
         }
