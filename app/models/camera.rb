@@ -1,13 +1,31 @@
 require "net/ftp"
 class Camera < ActiveRecord::Base
+  include CameraTypes
+
   has_many :camera_events
 
-  enum model: {
-    fi9821wv2: 0,
-    fi8910w: 1,
-  }
+  # enum model: {
+  #   fi9821wv2: 0,
+  #   fi8910w: 1,
+  # }
 
-  scope :with_recordings, ->{ fi9821wv2 }
+  #scope :with_recordings, ->{ fi9821wv2 }
+
+  after_initialize :become_type_for_make_and_model
+
+  def self.discriminate_class_for_record(record)
+    unless self.class == Camera || record['make'].nil? || record['model'].nil?
+      Camera.type_for(make: record['make'], model: record['model'])
+    else
+      super
+    end
+  end
+
+  def become_type_for_make_and_model
+    return unless self.class == Camera
+    return if make.nil? || model.nil?
+    self.becomes(Camera.type_for(make: make, model: model))
+  end
 
   def find_and_process_new_motion_events
     FindFtpMotionEventsWorker.perform_async(id) if can_record_events?
