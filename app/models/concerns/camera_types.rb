@@ -25,10 +25,19 @@ module CameraTypes
           fi9821: Camera::Foscam::HdCgi
         },
         reolink: {
-          rlc410: Camear::Reolink
+          rlc410: Camera::Reolink
         }
       }
     end
+  end
+
+  def camera_type
+    return nil if make.nil? || model.nil?
+    "#{make}:::#{model}"
+  end
+
+  def camera_type=(value)
+    self.make, self.model = value.split(':::')
   end
 
 end

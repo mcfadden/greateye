@@ -46,6 +46,9 @@ gem 'sinatra', :require => nil
 gem 'redis-namespace'
 
 gem 'bootstrap-sass', '~> 3.3'
+gem 'bootstrap_form'
+
+gem 'font-awesome-sass'
 
 gem 'kaminari'
 gem 'bootstrap-kaminari-views'

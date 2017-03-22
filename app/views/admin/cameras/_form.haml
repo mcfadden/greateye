@@ -1,0 +1,10 @@
+.row
+  .col-md-4.col-md-offset-4
+    = bootstrap_form_for @camera, as: :camera, url: (@camera.new_record? ? admin_cameras_path : admin_camera_path(@camera)) do |f|
+      = f.text_field :name
+      = f.text_field :username
+      = f.text_field :password
+      = f.check_box :active
+      = f.text_field :host
+      = f.select :camera_type, make_and_models_collection_for_select(@camera), include_blank: @camera.new_record?
+      = f.submit

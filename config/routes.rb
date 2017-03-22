@@ -24,6 +24,12 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :admin do
+    resources :cameras
+    resources :users
+    resources :settings
+  end
+
 
   root 'camera_events#index'
 

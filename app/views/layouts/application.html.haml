@@ -15,10 +15,6 @@
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
 
     = csrf_meta_tags
-
-    :javascript
-      Turbolinks.enableTransitionCache();
-    %link{:href => "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css", :rel => "stylesheet"}/
   %body.body{ class: content_for?(:body_class) ? content_for(:body_class) : "" }
     - if params[:kiosk] != "true"
       %nav.navbar.navbar-default{ "role" => "navigation" }
@@ -45,8 +41,16 @@
               %li{:class => (cn == 'camera_events' && controller.action_name == "kept") ? 'active' : ''}
                 = link_to "Kept Events", kept_camera_events_path
 
-              -#%li{:class => cn == 'camera_events' ? 'active' : ''}
-                = link_to "Stars", camera_events_path
+            - if current_user.admin?
+              %ul.nav.navbar-nav.navbar-right
+                %li.dropdown
+                  %a.dropdown-toggle{href: '#', data: {toggle: 'dropdown'} , role: 'button'} Admin
+                  %ul.dropdown-menu
+                    %li
+                      = link_to "Users", admin_users_path
+                      = link_to "Cameras", admin_cameras_path
+                      = link_to "Settings", admin_settings_path
+
 
     .container-fluid
       = yield
