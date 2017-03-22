@@ -1,4 +1,4 @@
-class FindFtpMotionEventsWorker
+class FindCameraEventsWorker
 
   include Sidekiq::Worker
 
@@ -13,5 +13,6 @@ class FindFtpMotionEventsWorker
     end
 
     camera = Camera.find(camera_id)
+    camera.find_camera_events!
   end
 end

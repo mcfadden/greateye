@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  authenticate :user do
+  authenticate :user, lambda { |u| u.admin? } do
     require 'sidekiq/web'
     mount Sidekiq::Web => '/sidekiq'
   end
@@ -31,6 +31,6 @@ Rails.application.routes.draw do
   end
 
 
-  root 'camera_events#index'
+  root 'cameras#live'
 
 end

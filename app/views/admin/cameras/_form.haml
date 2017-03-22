@@ -1,10 +1,30 @@
 .row
-  .col-md-4.col-md-offset-4
+  .col-md-6.col-md-offset-3
     = bootstrap_form_for @camera, as: :camera, url: (@camera.new_record? ? admin_cameras_path : admin_camera_path(@camera)) do |f|
-      = f.text_field :name
-      = f.text_field :username
-      = f.text_field :password
-      = f.check_box :active
-      = f.text_field :host
-      = f.select :camera_type, make_and_models_collection_for_select(@camera), include_blank: @camera.new_record?
-      = f.submit
+      .row
+        .col-md-12
+          %h3 General
+          = f.text_field :name
+          = f.check_box :active
+          = f.select :camera_type, make_and_models_collection_for_select(@camera), include_blank: @camera.new_record?
+      .row
+        .col-md-12.well
+          .row
+            .col-md-6
+              %h3 Camera Access
+              %small Used to show live previews
+              = f.text_field :username
+              = f.text_field :password
+              = f.text_field :host
+            .col-md-6
+              %h3 Events Access
+              %small Used to access FTP server where camera events are stored
+              = f.text_field :ftp_username, placeholder: "Blank uses Camera Access Username"
+              = f.text_field :ftp_password, placeholder: "Blank uses Camera Access Password"
+              = f.text_field :ftp_host, placeholder: "Blank uses Camera Access Host"
+              = f.text_field :ftp_port, value: @camera.ftp_port.presence || @camera.default_ftp_port
+              = f.text_field :ftp_path
+
+
+      - submit_label = @camera.new_record? ? 'Create Camera' : 'Update Camera'
+      = f.submit submit_label, class: 'btn btn-primary'

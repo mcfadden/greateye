@@ -45,11 +45,16 @@ class Admin::CamerasController < Admin::BaseController
   def camera_params
     params.require(:camera).permit(
       :name,
+      :active,
+      :camera_type,
       :username,
       :password,
-      :active,
       :host,
-      :camera_type
+      :ftp_username,
+      :ftp_password,
+      :ftp_host,
+      :ftp_port,
+      :ftp_path
     )
   end
 end

@@ -1,4 +1,4 @@
-- content_for(:body_class){"bg-black live"}
+- content_for(:body_class){"bg-black live"} if params[:kiosk]
 .row{style: "margin-bottom: 2em"}
   - @cameras.each_slice(3) do |cameras|
     .row
@@ -15,22 +15,22 @@
         setTimeout =>
           refreshImage(this)
         , 5000
-          
+
       refreshImage(this)
-  
+
   refreshImage = (img)->
     setTimeout ->
       console.log "Refreshing image"
       date = new Date()
       $(img).attr('src',  "\#{$(img).data('camera-preview-url')}&t=\#{date.getMilliseconds()}")
     , 1000
-  
+
   scaleImages = ->
     setTimeout ->
       $("img").height($(window).height() / 3)
     , 2000
-  
+
   $(window).resize(scaleImages)
-    
+
   refreshImages()
   scaleImages()
