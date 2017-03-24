@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170322220328) do
+ActiveRecord::Schema.define(version: 20170322234433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,11 +42,13 @@ ActiveRecord::Schema.define(version: 20170322220328) do
     t.integer  "status",          default: 0
     t.boolean  "keep",            default: false
     t.integer  "duration"
+    t.text     "remote_id"
   end
 
   add_index "camera_events", ["camera_id"], name: "index_camera_events_on_camera_id", using: :btree
   add_index "camera_events", ["event_timestamp"], name: "index_camera_events_on_event_timestamp", using: :btree
   add_index "camera_events", ["keep"], name: "index_camera_events_on_keep", using: :btree
+  add_index "camera_events", ["remote_id"], name: "index_camera_events_on_remote_id", unique: true, using: :btree
   add_index "camera_events", ["status"], name: "index_camera_events_on_status", using: :btree
 
   create_table "cameras", force: :cascade do |t|

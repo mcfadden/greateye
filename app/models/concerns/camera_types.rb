@@ -1,6 +1,15 @@
 module CameraTypes
   extend ActiveSupport::Concern
 
+  included do
+    Camera.makes.each do |make|
+      scope make, -> { where(make: make) }
+      models_for(make: make).each do |model|
+        scope "#{make}_#{model}", -> { where(make: make, model: model) }
+      end
+    end
+  end
+
   class_methods do
     def makes
       make_and_model_map.keys

@@ -1,6 +1,7 @@
 require "net/ftp"
 class Camera < ActiveRecord::Base
   include CameraTypes
+  include SystemAccess
 
   acts_as_list
 
@@ -34,10 +35,18 @@ class Camera < ActiveRecord::Base
     raise NotImplementedError, "You must implement `find_camera_events!` in your subclass."
   end
 
-  def find_and_process_new_motion_events
-    FindFtpMotionEventsWorker.perform_async(id) if can_record_events?
+  def perform_remote_cleanup
+    return unless active?
+    PerformRemoteCleanupWorker.perform_async(id)
   end
 
+  def perform_remote_cleanup!
+    raise NotImplementedError, "You must implement `perform_remote_cleanup!` in your subclass."
+  end
+
+  def process_camera_event(*args)
+    raise NotImplementedError, "You must implement `process_camera_event!` in your subclass."
+  end
 
   def video_events?
     false
