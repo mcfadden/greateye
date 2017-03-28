@@ -76,8 +76,7 @@ class Camera::Foscam::HdCgi < Camera::Foscam
     cmd = "ffprobe -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 \"#{tempfile.path}.mp4\""
     duration = run_shell_command(cmd, "ffprobe duration")
 
-    Rails.logger.debug "Creating camera event"
-    # Create the motion event
+    Rails.logger.debug "Calculating Event Timestamp"
     time_string = File.basename(file).gsub("MDalarm_", "").gsub("alarm_", "").gsub(".avi", "")
     timestamp = DateTime.strptime(time_string, "%Y%m%d_%H%M%S")
 
