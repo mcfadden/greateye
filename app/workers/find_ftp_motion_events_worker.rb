@@ -38,7 +38,7 @@ class FindFtpMotionEventsWorker
           # 30 days just to prevent something if a clock gets set to last year or something. ¯\_(ツ)_/¯
           if modified_time < 2.days.ago && modified_time > 30.days.ago
             Rails.logger.debug("Old index.dat.. deleting #{file}")
-            ftp.delete(file) unless READ_ONLY_MODE
+            ftp.delete(file) unless SystemSetting.read_only_mode
           end
         end
       end

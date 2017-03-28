@@ -121,7 +121,7 @@ class Camera::Foscam::HdCgi < Camera::Foscam
 
     camera_event.complete!
 
-    if READ_ONLY_MODE
+    if SystemSetting.read_only_mode
       Rails.logger.debug "READ ONLY MODE. Skippping delete for #{file} from FTP server"
     else
       Rails.logger.debug "Deleting #{file} from FTP server"
@@ -153,7 +153,7 @@ class Camera::Foscam::HdCgi < Camera::Foscam
       # 30 days just to prevent something if a clock gets set to last year or something. ¯\_(ツ)_/¯
       if modified_time < 2.days.ago && modified_time > 30.days.ago
         Rails.logger.debug("Old index.dat.. deleting #{file}")
-        ftp.delete(file) unless READ_ONLY_MODE
+        ftp.delete(file) unless SystemSetting.read_only_mode
       end
     end
   end

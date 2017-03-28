@@ -50,7 +50,7 @@ module Concerns::CameraInteractionMethod::Ftp
     if objects[:files].empty? && objects[:directories].empty?
       Rails.logger.debug "#{starting_directory} is empty. Deleting"
       count += 1
-      ftp.rmdir(starting_directory) unless READ_ONLY_MODE
+      ftp.rmdir(starting_directory) unless SystemSetting.read_only_mode
     else
       objects[:directories].each do |directory|
         delete_empty_ftp_directories_recursively!(directory)

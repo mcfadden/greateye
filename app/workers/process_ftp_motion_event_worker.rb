@@ -93,7 +93,7 @@ class ProcessFtpMotionEventWorker
 
     camera_event.complete!
 
-    if READ_ONLY_MODE
+    if SystemSetting.read_only_mode
       Rails.logger.debug "READ ONLY MODE. Skippping delete for #{file} from FTP server"
     else
       Rails.logger.debug "Deleting #{file} from FTP server"

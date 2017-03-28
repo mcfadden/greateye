@@ -1,1 +1,0 @@
-READ_ONLY_MODE = ENV['READ_ONLY_MODE'] == "true"
