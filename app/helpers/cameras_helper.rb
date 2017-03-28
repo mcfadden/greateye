@@ -7,4 +7,12 @@ module CamerasHelper
       camera.camera_type
     )
   end
+
+  def preview_url(camera:)
+    if camera.preview_requires_basic_auth?
+      preview_camera_url(camera)
+    else
+      camera.preview_url
+    end
+  end
 end

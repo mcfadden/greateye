@@ -5,7 +5,15 @@ class Camera::Amcrest::Ip3m < Camera::Amcrest
   end
 
   def preview_url
-    "http://#{username}:#{password}@#{host}/cgi-bin/realmonitor.cgi?action=getStream&channel=1&subtype=0"
+    "http://#{host}/cgi-bin/snapshot.cgi?channel=1"
+  end
+
+  def preview_requires_basic_auth?
+    true
+  end
+
+  def preview_needs_refreshing?
+    true
   end
 
   def perform_remote_cleanup!
@@ -150,5 +158,4 @@ class Camera::Amcrest::Ip3m < Camera::Amcrest
       end
     end
   end
-
 end

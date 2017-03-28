@@ -4,11 +4,11 @@
     .row
       - cameras.each do |camera|
         .col-md-4
-          = image_tag(camera.preview_url, width: "100%", data: {camera_preview_url: camera.preview_url, camera_model: camera.model}, class: "center-block camera-image img-responsive") rescue nil
+          = image_tag(preview_url(camera: camera), width: "100%", data: {camera_preview_url: preview_url(camera: camera), camera_preview_needs_refreshing: camera.preview_needs_refreshing?}, class: "center-block camera-image img-responsive") rescue nil
 
 :coffeescript
   refreshImages = ->
-    $("img[data-camera-model='fi9821wv2']").each ->
+    $("img[data-camera-preview-needs-refreshing='true']").each ->
       $(this).load ->
         refreshImage(this)
       .error ->
@@ -22,7 +22,10 @@
     setTimeout ->
       console.log "Refreshing image"
       date = new Date()
-      $(img).attr('src',  "\#{$(img).data('camera-preview-url')}&t=\#{date.getMilliseconds()}")
+      url = $(img).data('camera-preview-url')
+      unless /\?/.test(url)
+        url = url + "?a=b"
+      $(img).attr('src',  "\#{url}&t=\#{date.getMilliseconds()}")
     , 1000
 
   scaleImages = ->

@@ -60,4 +60,11 @@ class Camera < ActiveRecord::Base
     nil
   end
 
+  def preview_requires_basic_auth?
+    false
+  end
+
+  def preview_needs_refreshing?
+    true
+  end
 end

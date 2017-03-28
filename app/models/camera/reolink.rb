@@ -9,4 +9,7 @@ class Camera::Reolink < Camera
     "http://#{host}/cgi-bin/api.cgi?cmd=Snap&channel=0&rs=abc#{rand(12)}&user=#{username}&password=#{password}"
   end
 
+  def preview_needs_refreshing?
+    true
+  end
 end

@@ -19,6 +19,9 @@ Rails.application.routes.draw do
     end
   end
   resources :cameras do
+    member do
+      get :preview
+    end
     collection do
       get :live
     end

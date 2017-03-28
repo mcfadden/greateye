@@ -12,6 +12,10 @@ class Camera::Foscam::HdCgi < Camera::Foscam
     "http://#{host}/cgi-bin/CGIProxy.fcgi?cmd=snapPicture2&usr=#{username}&pwd=#{password}"
   end
 
+  def preview_needs_refreshing?
+    true
+  end
+
   def perform_remote_cleanup!
     with_ensure_ftp_close do
       delete_empty_ftp_directories_recursively!
@@ -156,5 +160,4 @@ class Camera::Foscam::HdCgi < Camera::Foscam
       end
     end
   end
-
 end
