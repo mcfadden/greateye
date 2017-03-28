@@ -1,0 +1,10 @@
+.row
+  .col-md-6.col-md-offset-3
+    = form_for :system_settings, url: admin_system_settings_path, method: :patch do |f|
+      %table.table.table-striped
+        - @settings.each do |setting|
+          %tr
+            %td= setting.name.to_s.titleize
+            %td= input_for_system_setting(setting)
+      = submit_tag "Save Settings", class: 'btn btn-primary'
+

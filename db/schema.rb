@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170322234433) do
+ActiveRecord::Schema.define(version: 20170327221600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,18 @@ ActiveRecord::Schema.define(version: 20170322234433) do
   end
 
   add_index "cameras", ["make", "model"], name: "index_cameras_on_make_and_model", using: :btree
+
+  create_table "system_settings", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "value_type",    default: 0, null: false
+    t.boolean  "bool_value"
+    t.string   "string_value"
+    t.integer  "integer_value"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "system_settings", ["name"], name: "index_system_settings_on_name", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false

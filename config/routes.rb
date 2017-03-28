@@ -32,7 +32,11 @@ Rails.application.routes.draw do
       end
     end
     resources :users
-    resources :settings
+    resources :system_settings, path: 'settings', only: [:index] do
+      collection do
+        patch :update
+      end
+    end
   end
 
 
