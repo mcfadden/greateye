@@ -19,7 +19,7 @@
         - if event.duration?
           \- #{Time.at(event.duration).utc.strftime("%M:%S")}
       - video = event.camera_event_assets.videos.first
-      .thumbnail{data: {video_url: (video.asset_url(expires: 1.week.from_now) rescue nil)}}
+      .thumbnail{ data: { event_url: camera_event_url(event), video_url: (video.asset_url(expires: 1.week.from_now) rescue nil) } }
         - cache ["event_asset", event.camera_event_assets.thumbnails.first], expires_in: 3.days do
           = image_tag(event.camera_event_assets.thumbnails.first.asset_url(expires: 1.week.from_now), width: "100%") rescue nil
 
@@ -27,13 +27,20 @@
   .col-md-12.text-center
     = paginate events, :theme => 'twitter-bootstrap-3'
 
-:coffeescript
-  $(".thumbnail img").click (e)->
-    video_url = $(this).parent(".thumbnail").data('video-url')
-    $(this).parent(".thumbnail").html(
-      "<video src='\#{video_url}' width='100%' controls='true' autoplay='autoplay' />"
-    )
+- if SystemSetting.thumbnail_click_action_inline_preview
+  :coffeescript
+    $(".thumbnail img").click (e)->
+      video_url = $(this).parent(".thumbnail").data('video-url')
+      $(this).parent(".thumbnail").html(
+        "<video src='\#{video_url}' width='100%' controls='true' autoplay='autoplay' />"
+      )
+- else
+  :coffeescript
+    $(".thumbnail img").click (e)->
+      event_url = $(this).parent(".thumbnail").data('event-url')
+      window.location.href = event_url
 
+:coffeescript
   $(".keep-link-wrapper a").on "ajax:success", (e, data, status, xhr) ->
     kept = $(this).parents('.keep-link-wrapper').data('kept')
     console.log "current kept status: \#{kept}"
