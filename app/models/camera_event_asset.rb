@@ -1,8 +1,8 @@
 class CameraEventAsset < ActiveRecord::Base
   belongs_to :camera_event
-  
-  anaconda_for :asset, base_key: :asset_key
-  
+
+  anaconda_for :asset, base_key: :asset_key, acl: :private
+
   enum status: {
     processing: 0,
     complete: 1

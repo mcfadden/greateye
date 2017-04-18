@@ -1,4 +1,5 @@
 class Camera::Foscam::HdCgi < Camera::Foscam
+  include Concerns::CameraEventVideoProcessing::FfmpegH264Source
 
   def video_events?
     true
@@ -53,74 +54,53 @@ class Camera::Foscam::HdCgi < Camera::Foscam
     Rails.logger.debug "Fetching file from FTP: #{file}"
     ftp.getbinaryfile(file, tempfile.path)
 
-    #cmd = "ffmpeg -i \"#{temp.path}\" -b:a 128k -vcodec mpeg4 -b:v 1200k -flags +aic+mv4 \"#{temp.path}.mp4\""
-
-    # OLD:
-
-      # # This cmd outputs a video file, and a PNG which is a thumbnail from the 5.5second mark in the video:
-      # cmd = "ffmpeg -y -threads '1' -i \"#{tempfile.path}\" \
-      #   -map '0:v' -map '0:a' -b:a 128k -vcodec mpeg4 -b:v 1200k -flags +aic+mv4 \"#{tempfile.path}.mp4\" \
-      #   -map '0:v' -ss 00:00:5.5 -vframes 1 \"#{tempfile.path}.jpg\""
-      #
-      # run_shell_command(cmd , "ffmpeg transcode")
-
-    cmd = "ffmpeg -i \"#{tempfile.path}\" -vcodec copy -acodec libfdk_aac -b:a 128k \"#{tempfile.path}.mp4\"  && ffmpeg -ss 00:00:5.5 -i \"#{tempfile.path}\" -vframes 1 \"#{tempfile.path}.jpg\""
-    run_shell_command(cmd , "ffmpeg transcode")
-
+    input_video_path = tempfile.path
     output_video_path = "#{tempfile.path}.mp4"
-    thumbnail_path = "#{tempfile.path}.jpg"
+    thumbnail_pattern = "#{tempfile.path}-thumbnail"
 
+    convert_file_to_mp4(source: input_video_path, destination: output_video_path)
     Rails.logger.debug "Transcoded Video path:  #{output_video_path}"
-    Rails.logger.debug "Created Thumbnail path: #{thumbnail_path}"
 
-    raise "Missing output video" unless File.exists?(output_video_path)
-    raise "Missing thumbnail" unless File.exists?(thumbnail_path)
+    export_thumbnails(source: input_video_path, destination_pattern: output_thumbnail_pattern)
+    Rails.logger.debug "Thumbnail pattern path: #{thumbnail_pattern}"
 
-    Rails.logger.debug "Calculating duration"
-    cmd = "ffprobe -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 \"#{tempfile.path}.mp4\""
-    duration = run_shell_command(cmd, "ffprobe duration")
+    duration = duration_for_video(source: output_video_path)
+    Rails.logger.debug "Duration found to be #{duration}"
+    # if it's over an hour, it's a malformed video. It happens
+    camera_event.duration = duration.to_i if duration.to_i > 0 && duration.to_i < 1.hour
 
     Rails.logger.debug "Calculating Event Timestamp"
     time_string = File.basename(file).gsub("MDalarm_", "").gsub("alarm_", "").gsub(".avi", "")
     timestamp = DateTime.strptime(time_string, "%Y%m%d_%H%M%S")
 
     camera_event.event_timestamp = timestamp
-    camera_event.duration        = duration.to_i if duration.to_i > 0
     camera_event.save
 
     Rails.logger.debug "Creating video event asset"
     # Create an asset for the video
-    event_asset = camera_event.camera_event_assets.build
-    event_asset.update_attributes(
-      asset_filename: "#{time_string}.mp4",
-      asset_file_path: "#{event_asset.asset_key}/#{time_string}.mp4",
-      asset_size: File.size(output_video_path),
-      asset_original_filename: nil,
-      asset_stored_privately: true,
-      asset_type: "video/mp4"
-    )
-    # Copy the transcoded file to S3
-    cmd = "AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY']}  AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_KEY']}  aws s3 --region us-east-1 cp \"#{output_video_path}\" \"s3://#{ENV['AWS_BUCKET']}/#{event_asset.asset_file_path}\" --acl private"
-    run_shell_command( cmd, "Copy video file to S3" )
+    video_event_asset = camera_event.camera_event_assets.build
+    video_event_asset.import_file_to_anaconda_column(output_video_path, :asset)
+    video_event_asset.update( asset_type: "video/mp4" )
+    video_event_asset.complete!
 
-    event_asset.complete!
+    #TODO : Replace the indented code by Looping over all the thumbnails with the right pattern and follow the video_event_asset pattern here.
 
-    Rails.logger.debug "Creating thumbnail event asset"
-    # Create an asset for a thumbnail
-    event_asset = camera_event.camera_event_assets.build
-    event_asset.update_attributes(
-      asset_filename: "#{time_string}.jpg",
-      asset_file_path: "#{event_asset.asset_key}/#{time_string}.jpg",
-      asset_size: File.size(thumbnail_path),
-      asset_original_filename: nil,
-      asset_stored_privately: true,
-      asset_type: "image/jpeg"
-    )
-    # Copy the thumbnail to S3
-    cmd = "AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY']}  AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_KEY']}  aws s3 --region us-east-1 cp \"#{thumbnail_path}\" \"s3://#{ENV['AWS_BUCKET']}/#{event_asset.asset_file_path}\" --acl private"
-    run_shell_command( cmd, "Copy thumbnail file to S3" )
+              Rails.logger.debug "Creating thumbnail event asset"
+              # Create an asset for a thumbnail
+              event_asset = camera_event.camera_event_assets.build
+              event_asset.update_attributes(
+                asset_filename: "#{time_string}.jpg",
+                asset_file_path: "#{event_asset.asset_key}/#{time_string}.jpg",
+                asset_size: File.size(thumbnail_path),
+                asset_original_filename: nil,
+                asset_stored_privately: true,
+                asset_type: "image/jpeg"
+              )
+              # Copy the thumbnail to S3
+              cmd = "AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY']}  AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_KEY']}  aws s3 --region us-east-1 cp \"#{thumbnail_path}\" \"s3://#{ENV['AWS_BUCKET']}/#{event_asset.asset_file_path}\" --acl private"
+              run_shell_command( cmd, "Copy thumbnail file to S3" )
 
-    event_asset.complete!
+              event_asset.complete!
 
     camera_event.complete!
 
@@ -135,6 +115,10 @@ class Camera::Foscam::HdCgi < Camera::Foscam
     return if ex.message.include?("No such file or directory")
   ensure
     ftp.close
+
+
+    TODO:
+      Delete all the thumbnail files that match the pattern
 
     # delete the transcoded file and thumbnail
     File.delete(output_video_path) if defined?(output_video_path) && output_video_path && File.exist?(output_video_path)
