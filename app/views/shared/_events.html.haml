@@ -4,7 +4,9 @@
 .row
   - events.each do |event|
     - highlight_event = params[:show_event_id] && event.id == params[:show_event_id].to_i
-    .col-md-4.col-sm-6.camera-event{class: highlight_event ? "highlighted" : ""}
+    - class_names = column_classes_for_index
+    - class_names << 'highlighted' if highlight_event
+    .camera-event{ class: class_names.join(' ') }
       .pull-right.text-right.keep-link-wrapper{data: {kept: event.kept?.to_s, keep_path: keep_camera_event_path(event), unkeep_path: unkeep_camera_event_path(event)} }
         - if event.kept?
           %i.fa.fa-times
@@ -18,27 +20,27 @@
           \- #{Time.at(event.duration).utc.strftime("%M:%S")}
       - video = event.camera_event_assets.videos.first
       .thumbnail{data: {video_url: (video.asset_url(expires: 1.week.from_now) rescue nil)}}
-        - cache ["event_asset", event.camera_event_assets.thumbnails.first], expires_in: 3.days do 
+        - cache ["event_asset", event.camera_event_assets.thumbnails.first], expires_in: 3.days do
           = image_tag(event.camera_event_assets.thumbnails.first.asset_url(expires: 1.week.from_now), width: "100%") rescue nil
-     
+
 .row
   .col-md-12.text-center
     = paginate events, :theme => 'twitter-bootstrap-3'
-  
+
 :coffeescript
   $(".thumbnail img").click (e)->
     video_url = $(this).parent(".thumbnail").data('video-url')
     $(this).parent(".thumbnail").html(
       "<video src='\#{video_url}' width='100%' controls='true' autoplay='autoplay' />"
     )
-    
+
   $(".keep-link-wrapper a").on "ajax:success", (e, data, status, xhr) ->
     kept = $(this).parents('.keep-link-wrapper').data('kept')
     console.log "current kept status: \#{kept}"
     console.log $(this)
     console.log typeof(kept)
     console.log kept == "true"
-    
+
     if kept
       # We just marked it unkeep
       console.log "changing to keep"
