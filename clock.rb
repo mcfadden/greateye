@@ -1,19 +1,20 @@
 require 'rubygems'
+require 'net/http'
 require 'clockwork'
 
-require './config/boot'
-require './config/environment'
+HOST = ENV['CLOCKWORK_HOST'] || '127.0.0.1'
 
 module Clockwork
-  # Local cleanup
-  every(10.minutes, 'tempfiles.clean') { UnlinkStrayTempfilesWorker.perform_async }
+  handler do |job|
+    http = Net::HTTP.new(HOST, 80)
+    request = Net::HTTP::Post.new("/cron/#{job}")
+    http.request(request)
+  end
 
-  # Purge old events
-  every(1.hour, 'camera_event.purge_old_events'){ CameraEvent.purge_old_events! }
+  every(1.minute, 'find_new_motion_events')
+  every(10.minutes, 'clean_tempfiles')
 
-  # Find new motion events
-  every(1.minute, 'camera.find_new_motion_events'){ Camera.active.each(&:find_camera_events) }
-
-  # Remote cleanup
-  every(1.day, 'camera.perform_remote_cleanup'){ Camera.active.each(&:perform_remote_cleanup) }
+  every(1.hour, 'purge_old_events')
+  every(1.hour, 'mark_events_as_failed')
+  every(12.hours, 'perform_remote_cleanup')
 end

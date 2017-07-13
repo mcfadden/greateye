@@ -27,6 +27,14 @@ Rails.application.routes.draw do
     end
   end
 
+  resource :cron, controller: 'cron' do
+    post :mark_events_as_failed
+    post :clean_tempfiles
+    post :purge_old_events
+    post :find_new_motion_events
+    post :perform_remote_cleanup
+  end
+
   namespace :admin do
     resources :cameras do
       member do

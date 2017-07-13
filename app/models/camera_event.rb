@@ -18,8 +18,20 @@ class CameraEvent < ActiveRecord::Base
   scope :unkept, ->{ where(keep: false) }
   scope :displayable, -> { where.not(event_timestamp: nil) }
 
+  def self.purge_old_events
+    PurgeOldEventsWorker.perform_async
+  end
+
   def self.purge_old_events!
     CameraEvent.unkept.where("event_timestamp < ?", 45.days.ago).destroy_all
+  end
+
+  def self.fail_old_events
+    FailOldEventsWorker.perform_async
+  end
+
+  def self.fail_old_events!
+    CameraEvent.processing.where('updated_at < ?', 1.hour.ago).update_all(status: :failed)
   end
 
   def primary_thumbnail
