@@ -13,7 +13,7 @@ class CamerasController < ApplicationController
   end
 
   def show
-    @events = @camera.camera_events.complete.ordered.page(params[:page]).per(24)
+    @events = @camera.camera_events.displayable.ordered.page(params[:page]).per(24)
   end
 
   def preview

@@ -67,7 +67,48 @@ module Concerns::CameraInteractionMethod::Ftp
     end
   end
 
+  def process_camera_event(camera_event)
+    tempfile = create_tempfile("camera-#{id.to_s}-")
+    file = camera_event.remote_id
+
+    Rails.logger.debug "Fetching file from FTP: #{file}"
+    ftp.getbinaryfile(file, tempfile.path)
+
+    camera_event.event_timestamp = timestamp_from_file(file: file)
+
+    create_camera_event_assets(camera_event: camera_event, input: tempfile.path)
+
+    Rails.logger.debug "Camera Event Complete!"
+    camera_event.complete!
+
+    if SystemSetting.read_only_mode
+      Rails.logger.debug "READ ONLY MODE. Skipping delete for #{file} from FTP server"
+    else
+      Rails.logger.debug "Deleting #{file} from FTP server"
+      ftp.delete(file)
+    end
+  rescue Net::FTPPermError => ex
+    Rails.logger.debug "Net::FTPPermError: #{ex.inspect}"
+    return if ex.message.include?("No such file or directory")
+  ensure
+    ftp.close
+
+    Rails.logger.debug "Deleting output video"
+    File.delete(output_video_path) if defined?(output_video_path) && output_video_path && File.exist?(output_video_path)
+    Rails.logger.debug "Deleting output thumbnails"
+    File.delete(*thumbnail_files) if defined?(thumbnail_files) && thumbnail_files && thumbnail_files.size > 0
+    Rails.logger.debug "Deleting tempfile"
+    tempfile.close
+    tempfile.unlink
+    File.delete(tempfile.path) if tempfile.path && File.exist?(tempfile.path)
+    tempfile = nil # Grasping at straws
+  end
+
   private
+
+  def set_camera_event_timestamp(file:)
+    raise NotImplementedError, "You must implement `set_camera_event_timestamp` in your subclass."
+  end
 
   def list_directory(directory, return_type: :files, recursive: false)
     Rails.logger.debug "Current dir: #{ftp.pwd}"

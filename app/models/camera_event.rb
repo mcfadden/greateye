@@ -9,15 +9,21 @@ class CameraEvent < ActiveRecord::Base
 
   enum status: {
     processing: 0,
-    complete: 1
+    complete: 1,
+    failed: 2
   }
 
   scope :ordered, ->{ order("event_timestamp DESC") }
   scope :kept, ->{ where(keep: true) }
   scope :unkept, ->{ where(keep: false) }
+  scope :displayable, -> { where.not(event_timestamp: nil) }
 
   def self.purge_old_events!
     CameraEvent.unkept.where("event_timestamp < ?", 45.days.ago).destroy_all
+  end
+
+  def primary_thumbnail
+    camera_event_assets.thumbnails.ordered.first
   end
 
   def keep!

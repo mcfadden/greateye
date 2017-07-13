@@ -7,7 +7,7 @@ module Concerns::CameraEventVideoProcessing::FfmpegH264Source
   end
 
   def export_thumbnails(source:, destination_pattern:)
-    cmd = "ffmpeg -ss 00:00:#{thumbnail_start_seconds} -i \"#{source}\" -r 1/#{thumbnail_interval_seconds} -vframes #{thumbnail_count} \"#{destination_pattern}-%03d.jpg\""
+    cmd = "ffmpeg -ss 00:00:#{thumbnail_start_seconds} -i \"#{source}\" -vf fps=1/#{thumbnail_interval_seconds} -vframes #{thumbnail_count} \"#{destination_pattern}-%03d.jpg\""
     run_shell_command(cmd , "ffmpeg export_thumbnails")
   end
 

@@ -8,6 +8,7 @@ class CameraEventAsset < ActiveRecord::Base
     complete: 1
   }
 
+  scope :ordered, ->{ order(created_at: :asc) }
   scope :thumbnails, ->{ where(asset_type: "image/jpeg" ) }
   scope :videos, ->{ where(asset_type: "video/mp4" ) }
 

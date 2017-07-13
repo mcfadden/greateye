@@ -15,5 +15,5 @@ module Clockwork
   every(1.minute, 'camera.find_new_motion_events'){ Camera.active.each(&:find_camera_events) }
 
   # Remote cleanup
-  every(1.day, 'empty_directories.remove'){ Camera.active.each(&:perform_remote_cleanup) }
+  every(1.day, 'camera.perform_remote_cleanup'){ Camera.active.each(&:perform_remote_cleanup) }
 end

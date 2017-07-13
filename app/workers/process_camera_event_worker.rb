@@ -1,6 +1,6 @@
 class ProcessCameraEventWorker
   include Sidekiq::Worker
-  sidekiq_options retry: 1
+  sidekiq_options retry: 3
 
   def perform(camera_event_id)
     camera_event = CameraEvent.find(camera_event_id)
