@@ -1,16 +1,13 @@
-module Concerns::CameraEventVideoProcessing::SingleVideoFile
+module Concerns::CameraEventVideoProcessing::ThumbnailAndVideoFile
   extend ActiveSupport::Concern
 
-  def create_camera_event_assets(input:, camera_event:)
+  def create_camera_event_assets(input:, thumbnail_input:, camera_event:)
     input_video_path = input
+    input_thumbnail_path = thumbnail_input
     output_video_path = "#{input_video_path}.mp4"
-    output_thumbnail_pattern = "#{input_video_path}-thumbnail"
 
     convert_file_to_mp4(source: input_video_path, destination: output_video_path)
     Rails.logger.debug "Transcoded Video path:  #{output_video_path}"
-
-    export_thumbnails(source: input_video_path, destination_pattern: output_thumbnail_pattern)
-    Rails.logger.debug "Thumbnail pattern path: #{output_thumbnail_pattern}"
 
     duration = duration_for_video(source: output_video_path)
     Rails.logger.debug "Duration found to be #{duration}"
@@ -26,20 +23,14 @@ module Concerns::CameraEventVideoProcessing::SingleVideoFile
     video_event_asset.update( asset_type: "video/mp4" )
     video_event_asset.complete!
 
-    # Create an asset for each thumbnail
+    # Create an asset for the thumbnail
     Rails.logger.debug "Creating thumbnail event assets"
-    thumbnail_files = Dir.glob("#{output_thumbnail_pattern}*")
-    thumbnail_files.each do |output_thumbnail_path|
-      Rails.logger.debug "Creating thumbnail event asset for #{output_thumbnail_path}"
-      thumbnail_event_asset = camera_event.camera_event_assets.build
-      thumbnail_event_asset.import_file_to_anaconda_column(output_thumbnail_path, :asset)
-      thumbnail_event_asset.update( asset_type: "image/jpeg" )
-      thumbnail_event_asset.complete!
-    end
+    thumbnail_event_asset = camera_event.camera_event_assets.build
+    thumbnail_event_asset.import_file_to_anaconda_column(input_thumbnail_path, :asset)
+    thumbnail_event_asset.update( asset_type: "image/jpeg" )
+    thumbnail_event_asset.complete!
   ensure
     Rails.logger.debug "Deleting output video"
     File.delete(output_video_path) if defined?(output_video_path) && output_video_path && File.exist?(output_video_path)
-    Rails.logger.debug "Deleting output thumbnails"
-    File.delete(*thumbnail_files) if defined?(thumbnail_files) && thumbnail_files && thumbnail_files.size > 0
   end
 end

@@ -93,10 +93,6 @@ module Concerns::CameraInteractionMethod::Ftp
   ensure
     ftp.close
 
-    Rails.logger.debug "Deleting output video"
-    File.delete(output_video_path) if defined?(output_video_path) && output_video_path && File.exist?(output_video_path)
-    Rails.logger.debug "Deleting output thumbnails"
-    File.delete(*thumbnail_files) if defined?(thumbnail_files) && thumbnail_files && thumbnail_files.size > 0
     Rails.logger.debug "Deleting tempfile"
     tempfile.close
     tempfile.unlink
