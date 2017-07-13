@@ -1,8 +1,8 @@
 # config valid only for current version of Capistrano
-lock '3.5.0'
+lock '3.8.0'
 
 set :application, 'greateye'
-set :repo_url, 'git@bitbucket.org:benmcfadden/greateye.git'
+set :repo_url, 'https://github.com/mcfadden/greateye.git'
 
 # set :rbenv_type, :user # or :system, depends on your rbenv setup
 # set :rbenv_ruby, File.read('.ruby-version').strip
@@ -16,9 +16,6 @@ ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/www/greateye'
-
-# Default value for :scm is :git
-set :scm, :git
 
 # Default value for :log_level is :debug
 #set :log_level, :info
