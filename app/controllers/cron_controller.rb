@@ -16,7 +16,7 @@ class CronController < ApplicationController
   end
 
   def find_new_motion_events
-    if Sidekiq::Queue.new('low').size > Camera.count * 3
+    if Sidekiq::Queue.new('low').size > Camera.count * 5
       # We already have a lot of jobs in the low queue
       Rails.logger.debug "Queue size over limit. Skipping this job."
       head :ok and return
