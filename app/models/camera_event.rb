@@ -31,7 +31,7 @@ class CameraEvent < ActiveRecord::Base
   end
 
   def self.fail_old_events!
-    CameraEvent.processing.where('updated_at < ?', 1.hour.ago).update_all(status: :failed)
+    CameraEvent.processing.where('updated_at < ?', 1.hour.ago).update_all(status: CameraEvent.statuses[:failed])
   end
 
   def primary_thumbnail
