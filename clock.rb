@@ -6,9 +6,13 @@ HOST = ENV['CLOCKWORK_HOST'] || '127.0.0.1'
 
 module Clockwork
   handler do |job|
-    http = Net::HTTP.new(HOST, 80)
-    request = Net::HTTP::Post.new("/cron/#{job}")
-    http.request(request)
+    begin
+      http = Net::HTTP.new(HOST, 80)
+      request = Net::HTTP::Post.new("/cron/#{job}")
+      http.request(request)
+    rescue Net::ReadTimeout
+      # Don't crash clockwork
+    end
   end
 
   every(1.minute, 'find_new_motion_events')
