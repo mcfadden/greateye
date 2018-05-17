@@ -62,8 +62,12 @@ namespace :deploy do
   namespace :services do
     desc "Stop Background Services"
     task :stop_background do
-      execute "sudo systemctl stop sidekiq", raise_on_non_zero_exit: false
-      execute "sudo systemctl stop clockwork", raise_on_non_zero_exit: false
+      on roles(:web) do
+        within release_path do
+          execute "sudo systemctl stop sidekiq", raise_on_non_zero_exit: false
+          execute "sudo systemctl stop clockwork", raise_on_non_zero_exit: false
+        end
+      end
     end
     desc "Restart All Services"
     task :restart do
