@@ -64,6 +64,10 @@ class Camera < ActiveRecord::Base
     false
   end
 
+  def preview_requires_digest_auth?
+    false
+  end
+
   def preview_needs_refreshing?
     true
   end
