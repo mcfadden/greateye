@@ -9,7 +9,7 @@ module CamerasHelper
   end
 
   def preview_url(camera:)
-    if camera.preview_requires_basic_auth?
+    if camera.preview_requires_basic_auth? || camera.preview_requires_digest_auth?
       preview_camera_url(camera, key: params[:key])
     else
       camera.preview_url
