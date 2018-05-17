@@ -26,7 +26,8 @@ module CameraTypes
     def make_and_model_map
       {
         amcrest: {
-          ip3m_956: Camera::Amcrest::Ip3m
+          ip3m_956: Camera::Amcrest::Ip3m,
+          ip5m_1173: Camera::Amcrest::Ip5m
         },
         foscam: {
           fi8910: Camera::Foscam::Sd,
