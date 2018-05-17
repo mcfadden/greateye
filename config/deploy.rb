@@ -60,14 +60,19 @@ namespace :deploy do
   end
 
   namespace :services do
+    desc "Stop Background Services"
+    task :stop_background do
+      execute "sudo systemctl stop sidekiq", raise_on_non_zero_exit: false
+      execute "sudo systemctl stop clockwork", raise_on_non_zero_exit: false
+    end
     desc "Restart All Services"
     task :restart do
       on roles(:web) do
         within release_path do
           with rails_env: fetch(:rails_env) do
             execute "/usr/local/bin/pumactl --config-file /www/greateye/current/config/puma.rb phased-restart"
-            execute "sudo systemctl restart sidekiq"
-            execute "sudo systemctl restart clockwork"
+            execute "sudo systemctl restart sidekiq || sudo systemctl start sidekiq"
+            execute "sudo systemctl restart clockwork || sudo systemctl start clockwork"
           end
         end
       end
@@ -75,4 +80,5 @@ namespace :deploy do
   end
 end
 
-after  "deploy:published", "deploy:services:restart"
+after "deploy:started", "deploy:services:stop_background"
+after "deploy:published", "deploy:services:restart"
