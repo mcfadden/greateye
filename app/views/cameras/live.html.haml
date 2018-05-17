@@ -26,12 +26,12 @@
       unless /\?/.test(url)
         url = url + "?a=b"
       $(img).attr('src',  "\#{url}&t=\#{date.getTime()}")
-    , 1000
+    , 3000
 
   scaleImages = ->
     setTimeout ->
       $("img").height($(window).height() / 3)
-    , 2000
+    , 5000
 
   $(window).resize(scaleImages)
 
