@@ -23,7 +23,7 @@ class CameraEvent < ActiveRecord::Base
   end
 
   def self.purge_old_events!
-    CameraEvent.unkept.where("event_timestamp < ?", 30.days.ago).destroy_all
+    CameraEvent.unkept.where("event_timestamp < ?", 30.days.ago).limit(500).destroy_all
   end
 
   def self.fail_old_events

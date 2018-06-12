@@ -18,7 +18,7 @@ module Clockwork
   every(1.minute, 'find_new_motion_events')
   every(10.minutes, 'clean_tempfiles')
 
-  every(1.hour, 'purge_old_events')
+  every(10.minutes, 'purge_old_events')
   every(1.hour, 'mark_events_as_failed')
   every(12.hours, 'perform_remote_cleanup')
 end
