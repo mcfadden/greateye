@@ -1,0 +1,7 @@
+.row
+  .col-md-4
+    %small= link_to "&larr; Stats".html_safe, admin_stats_path
+.row
+  .col-md-12
+    %h1 Events Per Day
+    = column_chart @grouped_events, library: {groupByRowLabel: false }

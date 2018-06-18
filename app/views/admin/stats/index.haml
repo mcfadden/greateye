@@ -7,7 +7,7 @@
         %th Storage
       - Camera.ordered.each do |camera|
         %tr
-          %th= camera.name
+          %th= link_to camera.name, admin_camera_stats_path(camera)
           %td= number_to_human_size(@storage_per_camera[camera.id] || 0)
       %tr
         %th Total

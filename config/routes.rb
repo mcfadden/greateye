@@ -41,6 +41,7 @@ Rails.application.routes.draw do
         post :move_higher
         post :move_lower
       end
+      resource :stats, controller: 'cameras/stats'
     end
     resources :users
     resources :system_settings, path: 'settings', only: [:index] do
