@@ -12,6 +12,9 @@
       %tr
         %th Total
         %td= number_to_human_size CameraEventAsset.sum(:asset_size)
+    %h4 MB Per Day
+    = column_chart @grouped_event_storage, library: {groupByRowLabel: false }
+
   .col-md-6
     %h1 Events
     %table.table.table-striped
@@ -27,3 +30,7 @@
       %tr
         %th Total
         %td= CameraEvent.count
+    %h4 Events Per Day
+    = column_chart @grouped_events, library: {groupByRowLabel: false }
+
+
