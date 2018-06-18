@@ -5,7 +5,7 @@ class Admin::StatsController < Admin::BaseController
     @grouped_events = CameraEvent.group_by_day(:event_timestamp, range: (oldest_event_timestamp..Time.now), format: "%m-%d").count
     @grouped_event_storage = CameraEventAsset
       .joins(:camera_event)
-      .group_by_day(:event_timestamp, range: (first_event_timestamp..Time.now), format: "%m-%d")
+      .group_by_day(:event_timestamp, range: (oldest_event_timestamp..Time.now), format: "%m-%d")
       .sum(:asset_size)
       .map{ |k, v| [k, (v.to_f / 1.megabyte).round]}
       .to_h
