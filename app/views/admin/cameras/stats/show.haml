@@ -3,5 +3,13 @@
     %small= link_to "&larr; Stats".html_safe, admin_stats_path
 .row
   .col-md-12
-    %h1 Events Per Day
+    %h1
+      = @camera.name
+      %small Events Per Day
     = column_chart @grouped_events, library: {groupByRowLabel: false }
+
+.row
+  .col-md-12
+    %h1
+      %small Storage Per Day
+    = column_chart @grouped_event_storage, library: {groupByRowLabel: false }
