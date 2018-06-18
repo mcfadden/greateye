@@ -1,0 +1,29 @@
+.row
+  .col-md-6
+    %h1 Storage
+    %table.table.table-striped
+      %tr
+        %th Camera
+        %th Storage
+      - Camera.ordered.each do |camera|
+        %tr
+          %th= camera.name
+          %td= number_to_human_size(@storage_per_camera[camera.id] || 0)
+      %tr
+        %th Total
+        %td= number_to_human_size CameraEventAsset.sum(:asset_size)
+  .col-md-6
+    %h1 Events
+    %table.table.table-striped
+      %tr
+        %th Camera
+        %th Events
+        %th Kept Events
+      - Camera.ordered.each do |camera|
+        %tr
+          %th= camera.name
+          %td= camera.camera_events.count
+          %td= camera.camera_events.kept.count
+      %tr
+        %th Total
+        %td= CameraEvent.count
