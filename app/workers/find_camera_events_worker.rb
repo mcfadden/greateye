@@ -2,7 +2,7 @@ class FindCameraEventsWorker
 
   include Sidekiq::Worker
 
-  sidekiq_options retry: 0, queue: :low
+  sidekiq_options retry: 1, queue: :low
 
   def perform(camera_id)
     camera = Camera.find(camera_id)
