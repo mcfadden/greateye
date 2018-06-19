@@ -9,6 +9,10 @@ class SystemSetting < ActiveRecord::Base
       type: :integer,
       default: 3
     },
+    columns_in_live_view: {
+      type: :integer,
+      default: 3
+    },
     thumbnail_click_action_inline_preview: {
       type: :boolean,
       default: true

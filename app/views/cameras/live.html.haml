@@ -1,9 +1,10 @@
 - content_for(:body_class){"bg-black live"} if params[:kiosk]
 .row{style: "margin-bottom: 2em"}
-  - @cameras.each_slice(3) do |cameras|
+  - column_width = [(12 / SystemSetting.columns_in_live_view), 1].max
+  - @cameras.each_slice(SystemSetting.columns_in_live_view) do |cameras|
     .row
       - cameras.each do |camera|
-        .col-md-4
+        %div{class: "col-md-#{column_width}"}
           = image_tag(preview_url(camera: camera), width: "auto", data: {camera_preview_url: preview_url(camera: camera), camera_preview_needs_refreshing: camera.preview_needs_refreshing?}, class: "center-block camera-image img-responsive") rescue nil
 
 :coffeescript
@@ -30,7 +31,7 @@
 
   scaleImages = ->
     setTimeout ->
-      $("img").height($(window).height() / 3)
+      $("img").height($(window).height() / #{SystemSetting.columns_in_live_view})
     , 5000
 
   $(window).resize(scaleImages)
