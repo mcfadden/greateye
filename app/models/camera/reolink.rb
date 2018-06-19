@@ -18,12 +18,14 @@ class Camera::Reolink < Camera
     true
   end
 
+  def perform_remote_cleanup!
+  end
+
   def find_camera_events!
     begin
       files = list_directory(ftp_path_with_default, recursive: true)
       files.each do |file|
-        # TODO: This is temporarily limited to the last 24 hours for my testing
-        if file.ends_with?(".mp4") && ftp.mtime(file) < 1.minute.ago && ftp.mtime(file) > 24.hours.ago
+        if file.ends_with?(".mp4") && ftp.mtime(file) < 1.minute.ago && ftp.mtime(file) > 45.days.ago
           camera_events.create(remote_id: file) unless camera_events.where(remote_id: file).present?
         end
       end
