@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170418041353) do
+ActiveRecord::Schema.define(version: 20180621213732) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 20170418041353) do
     t.integer  "thumbnail_count",            default: 1
     t.integer  "thumbnail_start_seconds",    default: 5
     t.integer  "thumbnail_interval_seconds", default: 1
+    t.integer  "purge_after_days",           default: 30
   end
 
   add_index "cameras", ["make", "model"], name: "index_cameras_on_make_and_model", using: :btree
