@@ -20,13 +20,16 @@ class CameraEvent < ActiveRecord::Base
   scope :kept, ->{ where(keep: true) }
   scope :unkept, ->{ where(keep: false) }
   scope :displayable, -> { where.not(event_timestamp: nil) }
+  scope :ready_for_purging, ->(camera_id) { where(camera_id: camera_id).unkept.where("event_timestamp < ?", Camera.find(camera_id).purge_after_days.days.ago) }
 
   def self.purge_old_events
     PurgeOldEventsWorker.perform_async
   end
 
   def self.purge_old_events!
-    CameraEvent.unkept.where("event_timestamp < ?", 30.days.ago).limit(500).destroy_all
+    Camera.ids do |camera_id|
+      CameraEvent.ready_for_purging(camera_id).limit(500).find_each(&:destroy)
+    end
   end
 
   def self.fail_old_events
