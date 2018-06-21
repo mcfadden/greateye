@@ -3,6 +3,9 @@ class CameraEvent < ActiveRecord::Base
   has_many :camera_event_assets, dependent: :destroy
   after_commit :process_camera_event, on: :create
 
+  has_one :primary_thumbnail, ->{ merge(CameraEventAsset.thumbnails.ordered) }, class_name: 'CameraEventAsset'
+  has_one :primary_video, ->{ merge(CameraEventAsset.videos.ordered) }, class_name: 'CameraEventAsset'
+
   enum event_type: {
     motion: 0
   }
@@ -32,10 +35,6 @@ class CameraEvent < ActiveRecord::Base
 
   def self.fail_old_events!
     CameraEvent.processing.where('updated_at < ?', 1.hour.ago).update_all(status: CameraEvent.statuses[:failed])
-  end
-
-  def primary_thumbnail
-    camera_event_assets.thumbnails.ordered.first
   end
 
   def keep!
