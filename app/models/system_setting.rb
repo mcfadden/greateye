@@ -1,6 +1,10 @@
 class SystemSetting < ActiveRecord::Base
 
   SETTINGS = {
+    find_new_events_enabled: {
+      type: :boolean,
+      default: true
+    },
     read_only_mode: {
       type: :boolean,
       default: false
