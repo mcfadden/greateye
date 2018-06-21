@@ -5,9 +5,9 @@ class Camera::Amcrest < Camera
 
   private
 
-  def remove_old_idx_files!
+  def remove_old_idx_and_jpg_files!
     all_ftp_files.each do |file|
-      next unless File.extname(file) == ".idx"
+      next unless [".idx", ".jpg"].include?(File.extname(file))
       modified_time = ftp.mtime(file)
       # Delete them if they're older than 2 days, but less than 30 days old.
       # 30 days just to prevent something if a clock gets set to last year or something. ¯\_(ツ)_/¯
