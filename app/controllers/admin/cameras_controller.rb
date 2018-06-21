@@ -59,6 +59,7 @@ class Admin::CamerasController < Admin::BaseController
       :camera_type,
       :username,
       :password,
+      :purge_after_days,
       :host,
       :thumbnail_count,
       :thumbnail_start_seconds,
