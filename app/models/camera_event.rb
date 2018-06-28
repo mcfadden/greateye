@@ -27,8 +27,8 @@ class CameraEvent < ActiveRecord::Base
   end
 
   def self.purge_old_events!
-    Camera.ids do |camera_id|
-      CameraEvent.ready_for_purging(camera_id).limit(500).find_each(&:destroy)
+    Camera.ids.each do |camera_id|
+      CameraEvent.ready_for_purging(camera_id).limit(500).each(&:destroy)
     end
   end
 
