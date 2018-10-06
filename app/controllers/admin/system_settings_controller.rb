@@ -14,6 +14,8 @@ class Admin::SystemSettingsController < Admin::BaseController
 
   def reboot
     `sudo shutdown -r now`
+    flash[:success] = "System Rebooting"
+    redirect_to admin_system_settings_path
   end
 
 end
