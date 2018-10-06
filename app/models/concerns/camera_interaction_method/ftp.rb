@@ -39,8 +39,8 @@ module Concerns::CameraInteractionMethod::Ftp
     ftp.chdir(ftp_path_with_default)
   end
 
-  def all_ftp_files
-    files = list_directory(ftp_path_with_default, recursive: true, return_type: :files)
+  def all_ftp_files(file_limit: 999_999)
+    files = list_directory(ftp_path_with_default, recursive: true, return_type: :files, max_file_count: file_limit)
     return files
   end
 
@@ -106,14 +106,25 @@ module Concerns::CameraInteractionMethod::Ftp
     raise NotImplementedError, "You must implement `set_camera_event_timestamp` in your subclass."
   end
 
-  def list_directory(directory, return_type: :files, recursive: false)
-    Rails.logger.debug "Current dir: #{ftp.pwd}"
+  def list_directory(directory, return_type: :files, recursive: false, current_file_count: 0, max_file_count: 999_999)
+    Rails.logger.debug "Current dir: #{ftp.pwd}" rescue nil
     Rails.logger.debug "Changing into directory: #{directory}"
     ftp.chdir(directory)
 
-    current_dir = ftp.pwd
+    begin
+      current_dir = ftp.pwd
+    rescue Net::FTPReplyError => e
+      # Sometimes this errors when it's actually successful
+      raise e unless e.message.include?("command successful")
+    end
 
-    list = ftp.list
+    begin
+      list = ftp.list
+    rescue Errno::ECONNRESET, Errno::ENOTCONN
+      # Since were likely deep in the folds here, let's just ignore this
+      # failure so we can return the files we already found up the recursive stream
+      list = []
+    end
 
     directories = []
     files = []
@@ -135,11 +146,17 @@ module Concerns::CameraInteractionMethod::Ftp
     if recursive
       directories.each do |directory|
         Rails.logger.debug "Going to list files in #{directory}"
-        objects = list_directory(directory, recursive: true, return_type: :hash)
+        objects = list_directory(directory, recursive: true, return_type: :hash, current_file_count: current_file_count, max_file_count: max_file_count)
         files += objects[:files]
         directories += objects[:directories]
+
+        current_file_count += files.size
+        break if current_file_count >= max_file_count
       end
     end
+
+    Rails.logger.debug "Files count: #{files.size}"
+    Rails.logger.debug "directories count: #{directories.size}"
 
     case return_type
       when :files       then return files

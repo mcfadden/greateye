@@ -17,8 +17,8 @@ class Camera::Amcrest::Ip5m < Camera::Amcrest
 
   def perform_remote_cleanup!
     with_ensure_ftp_close do
-      remove_old_idx_and_jpg_files!
       delete_empty_ftp_directories_recursively!
+      remove_old_idx_and_jpg_files!
     end
   end
 
