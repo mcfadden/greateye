@@ -12,4 +12,8 @@ class Admin::SystemSettingsController < Admin::BaseController
     redirect_to admin_system_settings_path
   end
 
+  def reboot
+    `sudo shutdown -r now`
+  end
+
 end

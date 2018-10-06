@@ -8,3 +8,5 @@
             %td= input_for_system_setting(setting)
       = submit_tag "Save Settings", class: 'btn btn-primary'
 
+= link_to "Reboot System", reboot_admin_system_settings_path, method: :post, class: 'btn btn-danger'
+

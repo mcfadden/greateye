@@ -47,6 +47,7 @@ Rails.application.routes.draw do
     resources :system_settings, path: 'settings', only: [:index] do
       collection do
         patch :update
+        post :reboot
       end
     end
     resources :stats
