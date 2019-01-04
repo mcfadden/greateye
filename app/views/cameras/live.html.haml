@@ -35,7 +35,25 @@
       $("img").height($(window).height() / #{SystemSetting.columns_in_live_view})
     , 5000
 
+  watchFocusChangedAt = ->
+    setTimeout ->
+      console.log "Checking last focus changed_at"
+      checkFocusChangedAt()
+    , 2000
+
+  checkFocusChangedAt = ->
+    $.getJSON =>
+      "/cameras/live_focus.json",
+      (data) ->
+        if window.focusChangedAt?
+          if window.focusChangedAt < data.changed_at
+            window.reload
+        else
+          window.focusChangedAt = data.changed_at
+
+
   $(window).resize(scaleImages)
 
   refreshImages()
   scaleImages()
+  watchFocusChangedAt()

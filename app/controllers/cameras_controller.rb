@@ -12,7 +12,7 @@ class CamerasController < ApplicationController
   end
 
   def live
-    if live_focus_data['changed_at'] && live_focus_data['changed_at'] > 1.minute.ago
+    if live_focus_data['changed_at'] && live_focus_data['changed_at'] > 1.minute.ago.to_i
       @cameras = Camera.find(live_focus_data['camera_id'])
     else
       @cameras = Camera.active.ordered
@@ -26,7 +26,7 @@ class CamerasController < ApplicationController
   def update_live_focus
     live_focus_camera = {
       camera_id: params[:camera_id],
-      changed_at: Time.now
+      changed_at: Time.now.to_i
     }
     Sidekiq.redis{ |r| r.set("live_focus_camera", live_focus_camera.to_json) }
     render text: 'ok'
