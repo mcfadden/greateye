@@ -2,6 +2,7 @@ require 'uri'
 require 'net/http'
 require 'net/http/digest_auth'
 class CamerasController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [:update_live_focus]
   skip_before_action :authenticate_user!, only: [:live, :live_focus, :update_live_focus, :preview]
   before_action :ensure_valid_key,        only: [:live, :live_focus, :update_live_focus, :preview]
   before_action :load_camera,             only: [:show, :preview]

@@ -25,7 +25,7 @@ Rails.application.routes.draw do
     collection do
       get :live
       get :live_focus
-      put :live_focus
+      put :live_focus, action: 'update_live_focus'
     end
   end
 
