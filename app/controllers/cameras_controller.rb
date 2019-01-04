@@ -28,7 +28,7 @@ class CamerasController < ApplicationController
       camera_id: params[:camera_id],
       changed_at: Time.now.to_i
     }
-    Sidekiq.redis{ |r| r.set("live_focus_camera", live_focus_camera.to_json) }
+    Sidekiq.redis{ |r| r.setex("live_focus_camera", 1.minute, live_focus_camera.to_json) }
     render text: 'ok'
   end
 

@@ -46,7 +46,7 @@
       "/cameras/live_focus.json",
       (data) ->
         if window.focusChangedAt?
-          if window.focusChangedAt < data.changed_at
+          if window.focusChangedAt != data.changed_at
             window.reload
         else
           window.focusChangedAt = data.changed_at
