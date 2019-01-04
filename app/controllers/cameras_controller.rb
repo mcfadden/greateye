@@ -3,7 +3,7 @@ require 'net/http'
 require 'net/http/digest_auth'
 class CamerasController < ApplicationController
   skip_before_action :authenticate_user!, only: [:live, :preview]
-  before_action :ensure_valid_key,        only: [:live, :preview]
+  before_action :ensure_valid_key,        only: [:live, :live_focus, :update_live_focus, :preview]
   before_action :load_camera,             only: [:show, :preview]
 
   def index
@@ -12,7 +12,24 @@ class CamerasController < ApplicationController
   end
 
   def live
-    @cameras = Camera.active.ordered
+    if live_focus['changed_at'] && live_focus['changed_at'] > 1.minute.ago
+      @cameras = Camera.find(live_focus['camera_id'])
+    else
+      @cameras = Camera.active.ordered
+    end
+  end
+
+  def live_focus
+    render json: live_focus
+  end
+
+  def update_live_focus
+    live_focus_camera = {
+      camera_id: params[:camera_id],
+      changed_at: Time.now
+    }
+    Sidekiq.redis{ |r| r.set("live_focus_camera", live_focus_camera.to_json) }
+    render text: 'ok'
   end
 
   def show
@@ -62,5 +79,9 @@ class CamerasController < ApplicationController
     else
       raise "invalid preview auth type"
     end
+  end
+
+  def live_focus
+    @live_focus = JSON.parse(Sidekiq.redis{ |r| r.get("live_focus_camera") } || "{}")
   end
 end

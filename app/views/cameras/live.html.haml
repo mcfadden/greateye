@@ -1,6 +1,7 @@
 - content_for(:body_class){"bg-black live"} if params[:kiosk]
 .row{style: "margin-bottom: 2em"}
   - column_width = [(12 / SystemSetting.columns_in_live_view), 1].max
+  - column_width = 12 if @cameras.size == 1
   - @cameras.each_slice(SystemSetting.columns_in_live_view) do |cameras|
     .row
       - cameras.each do |camera|

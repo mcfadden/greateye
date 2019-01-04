@@ -24,6 +24,8 @@ Rails.application.routes.draw do
     end
     collection do
       get :live
+      get :live_focus
+      put :live_focus
     end
   end
 
