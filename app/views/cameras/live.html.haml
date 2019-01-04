@@ -42,15 +42,14 @@
     , 2000
 
   checkFocusChangedAt = ->
-    $.getJSON =>
+    $.getJSON ->
       "/cameras/live_focus.json",
-      (data) ->
+      (data)->
         if window.focusChangedAt?
           if window.focusChangedAt != data.changed_at
             window.reload
         else
           window.focusChangedAt = data.changed_at
-
 
   $(window).resize(scaleImages)
 
