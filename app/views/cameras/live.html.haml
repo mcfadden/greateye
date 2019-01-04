@@ -28,11 +28,11 @@
       unless /\?/.test(url)
         url = url + "?a=b"
       $(img).attr('src',  "\#{url}&t=\#{date.getTime()}")
-    , 10000
+    , #{@cameras.size == 1 ? 1000 : 10000}
 
   scaleImages = ->
     setTimeout ->
-      $("img").height($(window).height() / #{SystemSetting.columns_in_live_view})
+      $("img").height($(window).height() / #{@cameras.size == 1 ? 1 : SystemSetting.columns_in_live_view})
     , 5000
 
   watchFocusChangedAt = ->
@@ -42,17 +42,37 @@
     , 2000
 
   checkFocusChangedAt = ->
-    $.getJSON ->
-      "/cameras/live_focus.json",
-      (data)->
-        if window.focusChangedAt?
-          if window.focusChangedAt != data.changed_at
-            window.reload
-        else
-          window.focusChangedAt = data.changed_at
+    date = new Date()
+    $.getJSON "/cameras/live_focus.json?key=\#{getUrlParam('key')}&t=\#{date.getTime()}", handleFocusChangedAtData
+
+  handleFocusChangedAtData = (data)->
+    if window.focusChangedAt?
+      if window.focusChangedAt != data.changed_at
+        console.log "focus changed_at has changed!"
+        window.location.reload()
+    else
+      window.focusChangedAt = data.changed_at
+    watchFocusChangedAt()
 
   $(window).resize(scaleImages)
 
   refreshImages()
   scaleImages()
   watchFocusChangedAt()
+
+:javascript
+  function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+  }
+
+  function getUrlParam(parameter, defaultvalue){
+    var urlparameter = defaultvalue;
+    if(window.location.href.indexOf(parameter) > -1){
+        urlparameter = getUrlVars()[parameter];
+        }
+    return urlparameter;
+  }
