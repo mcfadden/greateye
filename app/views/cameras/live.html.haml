@@ -35,30 +35,33 @@
       $("img").height($(window).height() / #{@cameras.size == 1 ? 1 : SystemSetting.columns_in_live_view})
     , 5000
 
-  watchFocusChangedAt = ->
+  watchFocusCamera = ->
     setTimeout ->
-      console.log "Checking last focus changed_at"
+      console.log "Checking focus camera_id"
       checkFocusChangedAt()
     , 2000
 
   checkFocusChangedAt = ->
     date = new Date()
-    $.getJSON "/cameras/live_focus.json?key=\#{getUrlParam('key')}&t=\#{date.getTime()}", handleFocusChangedAtData
+    $.getJSON("/cameras/live_focus.json?key=\#{getUrlParam('key')}&t=\#{date.getTime()}", handleFocusCamera).fail ->
+      setTimeout =>
+        watchFocusCamera(this)
+      , 15000
 
-  handleFocusChangedAtData = (data)->
-    if window.focusChangedAt?
-      if window.focusChangedAt != data.changed_at
-        console.log "focus changed_at has changed!"
+  handleFocusCamera = (data)->
+    if window.focusCameraID?
+      if window.focusCameraID != data.camera_id
+        console.log "focus camera ID has changed!"
         window.location.reload()
     else
-      window.focusChangedAt = data.changed_at
-    watchFocusChangedAt()
+      window.focusCameraID = data.camera_id
+    watchFocusCamera()
 
   $(window).resize(scaleImages)
 
   refreshImages()
   scaleImages()
-  watchFocusChangedAt()
+  watchFocusCamera()
 
 :javascript
   function getUrlVars() {
